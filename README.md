@@ -1,2 +1,2 @@
 # SWS
-Simple Web Server
+Simple Web Server.
