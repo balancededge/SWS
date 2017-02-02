@@ -15,9 +15,10 @@
 // DEFINES
 // ===========================================================================//
 
-#define TODO printf("TODO line: %d", __LINE__)
-#define TEST(x) if(!x) printf("FAILED line: %d\n", __LINE__);
+#define TODO        printf("TODO line: %d", __LINE__)
+#define TEST(x)     if(!x) printf("FAILED line: %d\n", __LINE__);
 #define BUFFER_SIZE 256
+#define MAX_PATH    4096
 
 //============================================================================//
 // INCLUDES
