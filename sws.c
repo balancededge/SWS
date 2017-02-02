@@ -195,7 +195,7 @@ int ARG_is_port(char* port) {
         }
     }
     printf("The port number you entered: %s is not valid. Please enter an\n"
-           "integer between 0 and 65535.\n\n");
+           "integer between 0 and 65535.\n\n", port);
     SHOW_usage();
     return 0;
 }
@@ -221,7 +221,7 @@ int SHOW_help() {
 }
 
 int SHOW_running() {
-    printf("sws is running on UDP port %d and serving %s\n"
+    printf("sws is running on UDP port %s and serving %s\n"
            "press ‘q’ to quit ...", CNFG_port, CNFG_directory);
     return EXIT_SUCCESS;
 }
@@ -351,5 +351,5 @@ int FILE_is_directory(char* path) {
 int FILE_in_directory(char* path) {
     char full_path[MAX_PATH + 1];
     realpath(path, full_path);
-    return strcmp(path, full_path, strlen(path)) == 0;
+    return strncmp(path, full_path, strlen(path)) == 0;
 }
