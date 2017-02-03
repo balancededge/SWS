@@ -273,7 +273,8 @@ int SHOW_usage() {
 int SHOW_help() {
     SHOW_usage();
     printf("Option:\n"
-           "  -h  --help  Show usage and options\n");
+           "  -h  --help  Show usage and options\n"
+           "  -t  --test  Run tests\n");
     return EXIT_SUCCESS;
 }
 /**
@@ -333,6 +334,10 @@ void HTTP_method(char* buffer, const char* request) {
  */
 void HTTP_URI(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 2);
+
+    if(buffer[strlen(buffer) - 1] == '/') {
+        strcpy(buffer + strlen(buffer), "index.html");
+    }
 }
 /**
  *
@@ -508,11 +513,16 @@ void test_HTTP_method() {
 
 void test_HTTP_URI() {
     // Parse request
-    char* request = "GET /dir/test HTTP/1.0";
+    char* request1 = "GET /dir/test HTTP/1.0";
     char buffer[MAX_BUFFER];
     HTTP_URI(buffer, request);
     // Assert URI
     ASSERT(strcmp("/dir/test", buffer) == 0);
+    // Parse request
+    char* request2 = "GET /dir/ HTTP/1.0";
+    HTTP_URI(buffer, request);
+    // Assert URI
+    ASSERT(strcmp("/dir/index.html", buffer) == 0);
     PASS;
 }
 
@@ -561,9 +571,11 @@ void test_FILE_is_directory() {
     // Valid directories
     ASSERT(FILE_is_directory("."));
     ASSERT(FILE_is_directory(".."));
+    ASSERT(FILE_is_directory("test"));
     // Invalid directories
     ASSERT(!FILE_is_directory("sws.c"));
     ASSERT(!FILE_is_directory("Hello World"));
+    ASSERT(!FILE_is_directory("test/index.html"))
     PASS;
 }
 
