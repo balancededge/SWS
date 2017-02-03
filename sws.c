@@ -31,15 +31,13 @@
 #include <ctype.h>
 #include <limits.h>
 #include <stdlib.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 
-#ifdef __unix__
-    #include <sys/socket.h>
-    #include <netinet/in.h>
-#else
-    void realpath(const char* a, char* b) {
-        _fullpath(b, a, MAX_PATH);
-    }
+#if !defined(MAX_PATH)
+    #define MAX_PATH 4096
 #endif
+
 const char* SWS = "\n"
 "    _____      _____\n"
 "   / __\\ \\ /\\ / / __|\n"
@@ -212,7 +210,7 @@ void SERVER_listen() {
     FD_ZERO(&read_fds);
     FD_SET(STDIN_FILENO, &read_fds);
 
-    while(true) {
+    while(1) {
         select_result = select(1, &read_fds, NULL, NULL, NULL);
         scanf("%s", buffer);
         if(strcmp(buffer, "q") == 0) {

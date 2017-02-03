@@ -1,5 +1,5 @@
 all: sws.c
-	gcc -g -Wall -o sws sws.c
+    gcc -o sws sws.c
 
-clean: 
-	$(RM) sws
+clean:
+    $(RM) sws
