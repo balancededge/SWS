@@ -249,7 +249,7 @@ int ARG_is_port(const char* port) {
  */
 int ARG_is_directory(const char* directory) {
     if(FILE_is_directory(directory)) {
-        strpy(directory, CNFG_directory);
+        strcpy(directory, CNFG_directory);
         return 1;
     }
     printf("The directory you entered: %s is not valid.", directory);
