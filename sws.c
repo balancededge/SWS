@@ -515,12 +515,12 @@ void test_HTTP_URI() {
     // Parse request
     char* request1 = "GET /dir/test HTTP/1.0";
     char buffer[MAX_BUFFER];
-    HTTP_URI(buffer, request);
+    HTTP_URI(buffer, request1);
     // Assert URI
     ASSERT(strcmp("/dir/test", buffer) == 0);
     // Parse request
     char* request2 = "GET /dir/ HTTP/1.0";
-    HTTP_URI(buffer, request);
+    HTTP_URI(buffer, request2);
     // Assert URI
     ASSERT(strcmp("/dir/index.html", buffer) == 0);
     PASS;
