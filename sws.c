@@ -581,13 +581,16 @@ void test_FILE_is_directory() {
 
 void test_FILE_in_directory() {
     // Valid files
-    ASSERT(FILE_is_file("sws.c"));
-    ASSERT(FILE_is_file("README.md"));
-    ASSERT(FILE_is_file("./../SWS/sws.c"));
+    ASSERT(FILE_in_directory("sws.c"));
+    ASSERT(FILE_in_directory("README.md"));
+    ASSERT(FILE_in_directory("./../SWS/sws.c"));
+    ASSERT(FILE_in_directory("."));
+    ASSERT(FILE_in_directory("test"));
+    ASSERT(FILE_in_directory("test/index.html"));
     // Invalid files
-    ASSERT(!FILE_is_file("not_a_file.c"));
-    ASSERT(!FILE_is_file("."));
-    ASSERT(!FILE_is_file("Hello World"));
+    ASSERT(!FILE_in_directory("not_a_file.c"));
+    ASSERT(!FILE_in_directory(".."));
+    ASSERT(!FILE_in_directory("Hello World"));
     PASS;
 }
 
