@@ -118,7 +118,7 @@ socklen_t CNFG_fromlen;
  * Program entry point.
  */
 int main(const int argc, char* argv[]) {
-    printf(SWS);
+    printf("%s", SWS);
 
     int i;
 
@@ -249,7 +249,7 @@ int ARG_is_port(const char* port) {
  */
 int ARG_is_directory(const char* directory) {
     if(FILE_is_directory(directory)) {
-        CNFG_directory = directory;
+        strpy(directory, CNFG_directory);
         return 1;
     }
     printf("The directory you entered: %s is not valid.", directory);
