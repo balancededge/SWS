@@ -266,6 +266,10 @@ void SERVER_listen() {
             status = 200;
             strcpy(reason, "OK");
 
+            char contents[MAX_BUFFER];
+            FILE_read(contents, URI);
+            printf("\n%s\n", contents);
+
             // Respond with file contents
         }
         // Log request
@@ -517,14 +521,43 @@ int FILE_is_directory(const char* path) {
  * @param   const char* path    path to file
  */
 int FILE_in_directory(const char* path) {
-    char appended_path[MAX_PATH + 1];
     char full_path[MAX_PATH + 1];
-    sprintf(appended_path, "%s/%s", CNFG_directory, path);
-    realpath(appended_path, full_path);
-    printf("valid: %d\n", (0 == 0 && FILE_is_file(full_path)));
+    FILE_full_path(full_path, path);
     return
         !strncmp(CNFG_directory, full_path, strlen(CNFG_directory)) &&
         FILE_is_file(full_path);
+}
+/**
+ *
+ */
+void FILE_full_path(char* buffer, const char* path) {
+    char tmp[MAX_PATH + 1];
+    sprintf(tmp, "%s%s", CNFG_directory, path);
+    realpath(tmp, buffer);
+}
+
+void FILE_read(char* buffer, const char* path) {
+    long file_size;
+    char full_path[MAX_PATH + 1];
+    long length;
+
+    FILE_full_path(full_path, path);
+
+    FILE* file = fopen(full_path, "rb");
+    if(file) {
+        fseek(file, 0, SEEK_END);
+        file_size = ftell(f);
+        fseek(file, 0, SEEK_SET);
+        fread(
+            buffer,
+            1,
+            MAX_BUFFER - 1 > file_size
+            ? file_size
+            : MAX_BUFFER - 1,
+            file
+        );
+    }
+    fclose(file);
 }
 
 //============================================================================//
