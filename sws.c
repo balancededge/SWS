@@ -524,7 +524,6 @@ int FILE_in_directory(const char* path) {
     printf("real path: %s\n", full_path);
     printf("is file: %d\n", FILE_is_file(full_path));
     printf("in dir: %s -> %d\n", CNFG_directory, strncmp(CNFG_directory, full_path, strlen(CNFG_directory)));
-    printf()
     return strncmp(
         CNFG_directory,
         full_path,
