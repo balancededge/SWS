@@ -34,7 +34,8 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "http.h"
+// Library includes
+#include "lib/http.h"
 
 
 #if !defined(MAX_PATH)
