@@ -521,7 +521,7 @@ int FILE_in_directory(const char* path) {
     char full_path[MAX_PATH + 1];
     sprintf(appended_path, "%s/%s", CNFG_directory, path);
     realpath(appended_path, full_path);
-    printf("valid: %d\n", (0 == 0 && 1));
+    printf("valid: %d\n", (0 == 0 && FILE_is_file(path)));
     return
         !strncmp(CNFG_directory, full_path, strlen(CNFG_directory)) &&
         FILE_is_file(path);
