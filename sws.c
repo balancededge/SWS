@@ -456,7 +456,7 @@ int FILE_is_directory(const char* path) {
 int FILE_in_directory(const char* path) {
     char full_path[MAX_PATH + 1];
     realpath(path, full_path);
-    return strncmp(CNFG_directory, full_path, strlen(path)) == 0;
+    return strncmp(CNFG_directory, full_path, strlen(CNFG_directory)) == 0;
 }
 
 //============================================================================//
@@ -582,16 +582,16 @@ void test_FILE_is_directory() {
 void test_FILE_in_directory() {
     ARG_is_directory(".");
     // Valid files
-    ASSERT(FILE_in_directory("./sws.c"));
+    ASSERT(FILE_in_directory("sws.c"));
     ASSERT(FILE_in_directory("README.md"));
     ASSERT(FILE_in_directory("./../SWS/sws.c"));
     ASSERT(FILE_in_directory("."));
     ASSERT(FILE_in_directory("test"));
     ASSERT(FILE_in_directory("test/index.html"));
     // Invalid files
-    ASSERT(!FILE_in_directory("not_a_file.c"));
+    ASSERT(!FILE_in_directory("./not_a_file.c"));
     ASSERT(!FILE_in_directory(".."));
-    ASSERT(!FILE_in_directory("Hello World"));
+    ASSERT(!FILE_in_directory("./Hello World"));
     PASS;
 }
 
