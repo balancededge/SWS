@@ -230,6 +230,7 @@ void SERVER_listen() {
         }
 
         // buffer = readRequest
+        int  status;
         char request[MAX_BUFFER];
         char method[MAX_BUFFER];
         char protocol[MAX_BUFFER];
@@ -248,14 +249,17 @@ void SERVER_listen() {
             strcmp(protocol, "HTTP") != 0 ||
             strcmp(version,  "1.0" ) != 0
         ) {
+            status = 400;
             strcpy(reason, "BAD REQUEST");
-            HTTP_response(buffer, 400, reason, "");
+            HTTP_response(buffer, status, reason, "");
         } else if(
             FILE_in_directory(URI)
         ) {
+            status = 404;
             strcpy(reason, "NOT FOUND");
-            HTTP_response(buffer, 404, reason, "");
+            HTTP_response(buffer, status, reason, "");
         } else {
+            status = 200;
             srcpy(reason, "OK");
 
             // Respond with file contents
@@ -266,7 +270,7 @@ void SERVER_listen() {
             CNFG_port,
             method,
             protocol,
-            vertsion,
+            version,
             status,
             reason,
             URI
