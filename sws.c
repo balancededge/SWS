@@ -17,6 +17,7 @@
 
 #define TODO        printf("TODO line: %d", __LINE__)
 #define MAX_BUFFER 256
+#define LOG(_x)     printf("%s", _x); fflush(stdout)
 
 //============================================================================//
 // INCLUDES
@@ -141,12 +142,14 @@ int main(const int argc, char* argv[]) {
     if(!ARG_is_port(argv[i])) {
         return EXIT_SUCCESS;
     }
-    if(ARG_is_directory(argv[i + 1])) {
+    if(!ARG_is_directory(argv[i + 1])) {
         return EXIT_SUCCESS;
     }
 
     // Start the Server
+    LOG("Starting server configuration");
     if(SERVER_configure()) {
+        LOG("Starting server listening")
         SERVER_listen();
     };
 
@@ -210,11 +213,14 @@ void SERVER_listen() {
     FD_ZERO(&read_fds);
     FD_SET(STDIN_FILENO, &read_fds);
 
+    LOG("Entering main loop");
     while(1) {
+        LOG("Before select");
         select_result = select(1, &read_fds, NULL, NULL, NULL);
-        printf("After select");
+        Log("After select");
         fflush(stdout);
         scanf("%s", buffer);
+        LOG(buffer);
         if(strcmp(buffer, "q") == 0) {
             printf("Exiting...");
             break;
