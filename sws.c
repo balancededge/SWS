@@ -456,6 +456,7 @@ int FILE_is_directory(const char* path) {
 int FILE_in_directory(const char* path) {
     char full_path[MAX_PATH + 1];
     realpath(path, full_path);
+    printf("%s vs. %s", full_path, CNFG_directory);
     return strncmp(CNFG_directory, full_path, strlen(CNFG_directory)) == 0;
 }
 
