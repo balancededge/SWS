@@ -517,6 +517,8 @@ int FILE_in_directory(const char* path) {
     char full_path[MAX_PATH + 1];
     sprintf(appended_path, "%s/%s", CNFG_directory, path);
     realpath(appended_path, full_path);
+    LOG("real path: %s", full_path);
+    LOG("is file: %d", FILE_is_file(full_path));
     return strncmp(
         CNFG_directory,
         full_path,
