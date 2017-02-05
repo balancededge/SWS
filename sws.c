@@ -217,7 +217,7 @@ void SERVER_listen() {
     while(1) {
         LOG("Before select");
         select_result = select(1, &read_fds, NULL, NULL, NULL);
-        Log("After select");
+        LOG("After select");
         fflush(stdout);
         scanf("%s", buffer);
         LOG(buffer);
