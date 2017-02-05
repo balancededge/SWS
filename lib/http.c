@@ -1,20 +1,22 @@
-#include "http.h";
+#include "http.h"
 
 #define MAX_BUFFER 1024
 
-void HTTP_method(char* buffer, const char* request) {
+char* HTTP_method(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 1);
+    return buffer;
 }
 
-void HTTP_URI(char* buffer, const char* request) {
+char* HTTP_URI(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 2);
 
     if(buffer[strlen(buffer) - 1] == '/') {
         strcpy(buffer + strlen(buffer), "index.html");
     }
+    return buffer;
 }
 
-void HTTP_protocol(char* buffer, const char*request) {
+char* HTTP_protocol(char* buffer, const char*request) {
     HTTP_parse_block(buffer, request, 3);
 
     int i;
@@ -23,9 +25,10 @@ void HTTP_protocol(char* buffer, const char*request) {
             buffer[i] = 0;
         }
     }
+    return buffer;
 }
 
-void HTTP_version(char* buffer, const char* request) {
+char* HTTP_version(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 3);
 
     int i, j;
@@ -39,6 +42,7 @@ void HTTP_version(char* buffer, const char* request) {
         }
     }
     buffer[j] = 0;
+    return buffer;
 }
 /**
  * Divides a request string into blocks based off whitespace. The requested
@@ -81,11 +85,12 @@ void HTTP_parse_block(char* buffer, const char* request, const int block) {
  * @param   const char* reason  Status reason message
  * @param   const char* objects Any hTML objects to attach to the response
  */
-void HTTP_response(
+char* HTTP_response(
     char* buffer,
     const int status,
     const char* reason,
     const char* objects
 ) {
     sprintf(buffer, "HTTP/1.0 %d %s\r\n%s", status, reason, objects);
+    return buffer;
 }
