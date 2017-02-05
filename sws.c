@@ -213,7 +213,7 @@ void SERVER_listen() {
     while(1) {
         select_result = select(1, &read_fds, NULL, NULL, NULL);
         printf("After select");
-        fflush("STDOUT_FILENO");
+        fflush("stdout");
         scanf("%s", buffer);
         if(strcmp(buffer, "q") == 0) {
             printf("Exiting...");
