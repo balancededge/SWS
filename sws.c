@@ -225,7 +225,7 @@ void SERVER_listen() {
         fgets(buffer, MAX_BUFFER - 1, stdin);
         LOG(buffer);
         if(strcmp(buffer, "q\n") == 0) {
-            printf("Exiting...");
+            printf("Exiting...\n");
             break;
         }
 
