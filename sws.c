@@ -244,6 +244,10 @@ void SERVER_listen() {
         HTTP_version(version, request);
         HTTP_URI(URI, request);
 
+        printf("method: %s -> %d", method,   strcmp(method,   "GET"));
+        printf("method: %s -> %d", protocol, strcmp(protocol, "HTTP"));
+        printf("method: %s -> %d", version,  strcmp(version,  "1.0"));
+
         if(
             strcmp(method,   "GET" ) != 0 ||
             strcmp(protocol, "HTTP") != 0 ||
