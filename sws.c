@@ -34,7 +34,7 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "sws/http.h"
+#include "lib/http.h"
 
 
 #if !defined(MAX_PATH)
