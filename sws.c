@@ -235,12 +235,12 @@ void SERVER_listen() {
         char protocol[MAX_BUFFER];
         char version[MAX_BUFFER];
         char URI[MAX_BUFFER];
-        char reaon[MAX_BUFFER];
+        char reason[MAX_BUFFER];
 
         strcpy(request, buffer);
         HTTP_method(method, request);
         HTTP_protocol(protocol, request);
-        HTTP_version(verison, request);
+        HTTP_version(version, request);
         HTTP_URI(URI, request);
 
         if(
@@ -251,7 +251,7 @@ void SERVER_listen() {
             strcpy(reason, "BAD REQUEST");
             HTTP_response(buffer, 400, reason, "");
         } else if(
-            FILE_in_directory(HTTP_URI())
+            FILE_in_directory(URI)
         ) {
             strcpy(reason, "NOT FOUND");
             HTTP_response(buffer, 404, reason, "");
@@ -262,8 +262,8 @@ void SERVER_listen() {
         }
         // Log request
         SHOW_request(
-            "127.0.0.1"
-            CNFG_port
+            "127.0.0.1",
+            CNFG_port,
             method,
             protocol,
             vertsion,
@@ -685,11 +685,11 @@ int TEST_test() {
 
     SHOW_request(
         "127.0.0.1",
-        "3200",
+        3200,
         "GET",
         "HTML",
         "1.0",
-        "404",
+        404,
         "NOT FOUND",
         "/not_a_file");
     return EXIT_SUCCESS;
