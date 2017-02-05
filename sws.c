@@ -92,6 +92,8 @@ void HTTP_response(
 int FILE_is_file(const char* path);
 int FILE_is_directory(const char* path);
 int FILE_in_directory(const char* path);
+void FILE_full_path(char* buffer, const char* path);
+void FILE_read(char* buffer, const char* path);
 
 // Server
 int SERVER_configure();
