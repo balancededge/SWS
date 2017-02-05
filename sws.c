@@ -17,7 +17,7 @@
 
 #define TODO        printf("TODO line: %d", __LINE__)
 #define MAX_BUFFER 256
-#define LOG(_x)     printf("%s", _x); fflush(stdout)
+#define LOG(_x)     printf("%s\n", _x); fflush(stdout)
 
 //============================================================================//
 // INCLUDES
@@ -163,7 +163,7 @@ int main(const int argc, char* argv[]) {
  *
  */
 int SERVER_configure() {
-    /*
+
     // Create socket
     CNFG_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     // Check that we succeeded
@@ -199,7 +199,6 @@ int SERVER_configure() {
         close(CNFG_sock);
         return 0;
     }
-    */
     return 1;
 }
 /**
