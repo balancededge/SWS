@@ -1,4 +1,6 @@
-#include "file.h";
+#include "http.h";
+
+#define MAX_BUFFER 1024
 
 void HTTP_method(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 1);
