@@ -64,11 +64,11 @@ int SHOW_help();
 int SHOW_running();
 int SHOW_request(
     const char* IP,
-    const char* port,
+    const int port,
     const char* method,
     const char* protocol,
     const char* version,
-    const char* status,
+    const int status,
     const char* reason,
     const char* URI
 );
@@ -214,9 +214,13 @@ void SERVER_listen() {
 
     LOG("Entering main loop");
     while(1) {
+
         LOG("Before select");
+
         select_result = select(1, &read_fds, NULL, NULL, NULL);
+
         LOG("After select");
+
         fflush(stdout);
         scanf("%s", buffer);
         LOG(buffer);
@@ -224,6 +228,49 @@ void SERVER_listen() {
             printf("Exiting...");
             break;
         }
+
+        // buffer = readRequest
+        char request[MAX_BUFFER];
+        char method[MAX_BUFFER];
+        char protocol[MAX_BUFFER];
+        char version[MAX_BUFFER];
+        char URI[MAX_BUFFER];
+        char reaon[MAX_BUFFER];
+
+        strcpy(request, buffer);
+        HTTP_method(method, request);
+        HTTP_protocol(protocol, request);
+        HTTP_version(verison, request);
+        HTTP_URI(URI, request);
+
+        if(
+            strcmp(method,   "GET" ) != 0 ||
+            strcmp(protocol, "HTTP") != 0 ||
+            strcmp(version,  "1.0" ) != 0
+        ) {
+            strcpy(reason, "BAD REQUEST");
+            HTTP_response(buffer, 400, reason, "");
+        } else if(
+            FILE_in_directory(HTTP_URI())
+        ) {
+            strcpy(reason, "NOT FOUND");
+            HTTP_response(buffer, 404, reason, "");
+        } else {
+            srcpy(reason, "OK");
+
+            // Respond with file contents
+        }
+        // Log request
+        SHOW_request(
+            "127.0.0.1"
+            CNFG_port
+            method,
+            protocol,
+            vertsion,
+            status,
+            reason,
+            URI
+        );
     }
     close(CNFG_sock);
     return;
@@ -297,11 +344,11 @@ int SHOW_running() {
  */
 int SHOW_request(
     const char* IP,
-    const char* port,
+    const int port,
     const char* method,
     const char* protocol,
     const char* version,
-    const char* status,
+    const int status,
     const char* reason,
     const char* URI
 ) {
@@ -314,7 +361,7 @@ int SHOW_request(
     //Sep 12 12:00:00
     strftime(buffer, 26, "%b %d %H:%M:%S", tm_info);
     // time IP:Port method / protocol/version; HTTP/1.0 status reason; URI
-    printf("%s %s:%s %s / %s/%s; HTTP/1.0 %s %s; %s",
+    printf("%s %s:%d %s / %s/%s; HTTP/1.0 %d %s; %s",
         buffer,
         IP,
         port,
