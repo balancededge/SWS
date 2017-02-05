@@ -1,3 +1,4 @@
+#include <string.h>
 #include "http.h"
 
 #define MAX_BUFFER 1024
