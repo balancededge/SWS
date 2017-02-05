@@ -548,7 +548,7 @@ void FILE_read(char* buffer, const char* path) {
     FILE* file = fopen(full_path, "rb");
     if(file) {
         fseek(file, 0, SEEK_END);
-        file_size = ftell(f);
+        file_size = ftell(file);
         fseek(file, 0, SEEK_SET);
         fread(
             buffer,
