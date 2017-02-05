@@ -15,9 +15,9 @@
 // DEFINES
 // ===========================================================================//
 
-#define TODO        printf("TODO line: %d", __LINE__)
+#define TODO       printf("TODO line: %d", __LINE__)
 #define MAX_BUFFER 256
-#define LOG(_x)     printf("%s\n", _x); fflush(stdout)
+#define LOG(_x)    printf("%s\n", _x); fflush(stdout)
 
 //============================================================================//
 // INCLUDES
@@ -513,8 +513,10 @@ int FILE_is_directory(const char* path) {
  * @param   const char* path    path to file
  */
 int FILE_in_directory(const char* path) {
+    char appended_path[MAX_PATH + 1];
     char full_path[MAX_PATH + 1];
-    realpath(path, full_path);
+    sprintf(appended_path, "%s/%s", CNFG_directory, path);
+    realpath(appended_path, full_path);
     return strncmp(
         CNFG_directory,
         full_path,
