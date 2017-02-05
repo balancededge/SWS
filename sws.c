@@ -589,11 +589,11 @@ void test_FILE_in_directory() {
     ASSERT(FILE_in_directory("sws.c"));
     ASSERT(FILE_in_directory("README.md"));
     ASSERT(FILE_in_directory("./../SWS/sws.c"));
-    ASSERT(FILE_in_directory("."));
     ASSERT(FILE_in_directory("test"));
     ASSERT(FILE_in_directory("test/index.html"));
     // Invalid files
     ASSERT(!FILE_in_directory("./not_a_file.c"));
+    ASSERT(FILE_in_directory(".."));
     ASSERT(!FILE_in_directory(".."));
     ASSERT(!FILE_in_directory("./Hello World"));
     PASS;
