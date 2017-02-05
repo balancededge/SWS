@@ -582,7 +582,7 @@ void test_FILE_is_directory() {
 void test_FILE_in_directory() {
     ARG_is_directory(".");
     // Valid files
-    ASSERT(FILE_in_directory("sws.c"));
+    ASSERT(FILE_in_directory("./sws.c"));
     ASSERT(FILE_in_directory("README.md"));
     ASSERT(FILE_in_directory("./../SWS/sws.c"));
     ASSERT(FILE_in_directory("."));
