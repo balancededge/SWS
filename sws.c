@@ -181,7 +181,7 @@ int SERVER_configure() {
         sizeof(int)
     );
     // Clear garbage
-    memset(&CNFG_serveradd, 0, sizeof CNFG_sa);
+    memset(&CNFG_serveradd, 0, sizeof CNFG_serveradd);
 
     // build address
     CNFG_serveradd.sin_family      = AF_INET;
