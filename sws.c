@@ -456,8 +456,11 @@ int FILE_is_directory(const char* path) {
 int FILE_in_directory(const char* path) {
     char full_path[MAX_PATH + 1];
     realpath(path, full_path);
-    printf("full:%s\ndir:%s\n", full_path, CNFG_directory);
-    return strncmp(CNFG_directory, full_path, strlen(CNFG_directory)) == 0;
+    return strncmp(
+        CNFG_directory,
+        full_path,
+        strlen(CNFG_directory)
+    ) == 0 && FILE_is_file(path);
 }
 
 //============================================================================//
