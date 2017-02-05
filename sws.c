@@ -222,7 +222,7 @@ void SERVER_listen() {
         LOG("After select");
 
         fflush(stdout);
-        scanf("%s", buffer);
+        fgets(buffer, MAX_BUFFER - 1, stdin);
         LOG(buffer);
         if(strcmp(buffer, "q") == 0) {
             printf("Exiting...");
@@ -365,7 +365,7 @@ int SHOW_request(
     //Sep 12 12:00:00
     strftime(buffer, 26, "%b %d %H:%M:%S", tm_info);
     // time IP:Port method / protocol/version; HTTP/1.0 status reason; URI
-    printf("%s %s:%d %s / %s/%s; HTTP/1.0 %d %s; %s",
+    printf("%s %s:%d %s / %s/%s; HTTP/1.0 %d %s; %s\n",
         buffer,
         IP,
         port,
@@ -650,7 +650,7 @@ void test_FILE_in_directory() {
     ASSERT(FILE_in_directory("test/index.html"));
     // Invalid files
     ASSERT(!FILE_in_directory("./not_a_file.c"));
-    ASSERT(FILE_in_directory(".."));
+    ASSERT(!FILE_in_directory(".."));
     ASSERT(!FILE_in_directory(".."));
     ASSERT(!FILE_in_directory("./Hello World"));
     PASS;
