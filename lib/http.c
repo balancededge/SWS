@@ -3,6 +3,40 @@
 
 #define MAX_BUFFER 1024
 
+/**
+ * Divides a request string into blocks based off whitespace. The requested
+ * block is written into the provided buffer.
+ *
+ * @param   char*       buffer  write buffer
+ * @param   const char* request HTTP request to parse
+ * @param   const int   block to write
+ */
+void HTTP_parse_block(char* buffer, const char* request, const int block) {
+
+    // vars
+    int i, j;
+    int in_block = 0;
+    int current_block = 0;
+
+    for(i = j = 0; i < strlen(request) && i < MAX_BUFFER; i++) {
+        if(isspace(request[i])) {
+            in_block = 0;
+            continue;
+        }
+        if(!in_block) {
+            current_block++;
+            in_block = 1;
+        }
+        if(current_block > block) {
+            break;
+        }
+        if(current_block == block) {
+            buffer[j++] = request[i];
+        }
+    }
+    buffer[j] = 0;
+}
+
 char* HTTP_method(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 1);
     return buffer;
@@ -44,39 +78,6 @@ char* HTTP_version(char* buffer, const char* request) {
     }
     buffer[j] = 0;
     return buffer;
-}
-/**
- * Divides a request string into blocks based off whitespace. The requested
- * block is written into the provided buffer.
- *
- * @param   char*       buffer  write buffer
- * @param   const char* request HTTP request to parse
- * @param   const int   block to write
- */
-void HTTP_parse_block(char* buffer, const char* request, const int block) {
-
-    // vars
-    int i, j;
-    int in_block = 0;
-    int current_block = 0;
-
-    for(i = j = 0; i < strlen(request) && i < MAX_BUFFER; i++) {
-        if(isspace(request[i])) {
-            in_block = 0;
-            continue;
-        }
-        if(!in_block) {
-            current_block++;
-            in_block = 1;
-        }
-        if(current_block > block) {
-            break;
-        }
-        if(current_block == block) {
-            buffer[j++] = request[i];
-        }
-    }
-    buffer[j] = 0;
 }
 /**
  * Formats an HTTP response and places it into the provided BUFFER.
