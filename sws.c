@@ -212,6 +212,8 @@ void SERVER_listen() {
 
     while(1) {
         select_result = select(1, &read_fds, NULL, NULL, NULL);
+        printf("After select");
+        fflish("STDIN_FILENO");
         scanf("%s", buffer);
         if(strcmp(buffer, "q") == 0) {
             printf("Exiting...");
@@ -589,7 +591,6 @@ void test_FILE_in_directory() {
     ASSERT(FILE_in_directory("sws.c"));
     ASSERT(FILE_in_directory("README.md"));
     ASSERT(FILE_in_directory("./../SWS/sws.c"));
-    ASSERT(FILE_in_directory("test"));
     ASSERT(FILE_in_directory("test/index.html"));
     // Invalid files
     ASSERT(!FILE_in_directory("./not_a_file.c"));
