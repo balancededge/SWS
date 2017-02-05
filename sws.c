@@ -253,7 +253,7 @@ void SERVER_listen() {
             strcpy(reason, "BAD REQUEST");
             HTTP_response(buffer, status, reason, "");
         } else if(
-            FILE_in_directory(URI)
+            !FILE_in_directory(URI)
         ) {
             status = 404;
             strcpy(reason, "NOT FOUND");
