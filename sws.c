@@ -260,7 +260,7 @@ void SERVER_listen() {
             HTTP_response(buffer, status, reason, "");
         } else {
             status = 200;
-            srcpy(reason, "OK");
+            strcpy(reason, "OK");
 
             // Respond with file contents
         }
