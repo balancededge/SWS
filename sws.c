@@ -149,7 +149,7 @@ int main(const int argc, char* argv[]) {
     // Start the Server
     LOG("Starting server configuration");
     if(SERVER_configure()) {
-        LOG("Starting server listening")
+        LOG("Starting server listening");
         SERVER_listen();
     };
 
