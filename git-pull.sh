@@ -1,3 +1,3 @@
 git pull
 make
-./sws -t
+./sws -tg
