@@ -18,6 +18,7 @@
 #define TODO       printf("TODO line: %d", __LINE__)
 #define MAX_BUFFER 1024
 #define LOG(_x)    printf("%s\n", _x); fflush(stdout)
+#define VERSION "0.0.2"
 
 //============================================================================//
 // INCLUDES
@@ -66,7 +67,7 @@ socklen_t CNFG_fromlen;
  */
 int main(const int argc, char* argv[]) {
 
-    print_title();
+    print_title(VERSION);
 
     int i;
 
@@ -215,7 +216,7 @@ void SERVER_listen() {
             // Respond with file contents
         }
         // Log request
-        SHOW_request(
+        print_request(
             "127.0.0.1",
             CNFG_port,
             method,
@@ -248,6 +249,6 @@ int ARG_is_port(const char* port) {
     }
     printf("The port number you entered: %s is not valid. Please enter an\n"
            "integer between 0 and 65535.\n\n", port);
-    SHOW_usage();
+    print_usage();
     return 0;
 }
