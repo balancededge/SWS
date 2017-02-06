@@ -251,8 +251,14 @@ int start() {
             print_select_error();
             break;
         }
-        if(!handle_user() || !handle_request()) {
-            break;
+        if(FD_ISSET(STDIN_FILENO, &read_fds)) {
+            if(!handle_user()) {
+                break;
+            }
+        } else {
+            if(!handle_request()) {
+                break;
+            }
         }
     }
 }
@@ -283,7 +289,22 @@ int handle_request() {
     char response[MAX_BUFFER];
     char objects [MAX_BUFFER];
 
-    fgets(request, MAX_BUFFER - 1, stdin);
+    ssize_t rec_size = recvfrom(
+        sock,
+        (void*) request,
+        sizeof request,
+        0,
+        (struct sockaddr*) &address,
+        &sock_length
+    );
+
+    if(rec_size < 0) {
+        print_recieve_error();
+        return 0;
+    }
+    if(strlen(request) <= 0) {
+        return 1;
+    }
 
     // Handle BAD REQUEST
     if(
@@ -317,7 +338,8 @@ int handle_request() {
 
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
-    LOG(response);
+
+    // Send response
 
     return 1;
 }

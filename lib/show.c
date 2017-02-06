@@ -45,6 +45,11 @@ int print_select_error() {
     return EXIT_SUCCESS;
 }
 
+int print_recieve_error() {
+    printf("Error: recieve from returned error code\n");
+    return EXIT_SUCCESS;
+}
+
 int print_request(
     const char* IP,
     const int port,
