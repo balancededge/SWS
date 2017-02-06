@@ -258,20 +258,57 @@ int start() {
 }
 
 int handle_user() {
+    /*
     char buffer[MAX_BUFFER];
     fgets(buffer, MAX_BUFFER - 1, stdin);
     util_no_whitespace(buffer);
-    LOG(buffer);
-    printf("%d\n", strcmp(buffer, "q"));
-    printf("%d\n", strcmp(buffer, "\n"));
-
     if(strcmp(buffer, "q") == 0) {
         printf("Exiting...\n");
         return 0;
     }
+    */
     return 1;
 }
 
 int handle_request() {
+
+    // To be replaced with recieve from
+    int status;
+
+    char reason[MAX_BUFFER];
+    char method[MAX_BUFFER];
+    char uri[MAX_BUFFER];
+    char request[MAX_BUFFER];
+
+    fgets(request, MAX_BUFFER - 1, stdin);
+
+    // Handle BAD REQUEST
+    if(
+        strcmp(http_method(method, request), "GET") != 0 ||
+        strcmp(http_protocol(protocol, request), "HTTP/1.0") != 0
+    ) {
+        status = 400;
+
+    // Handle NOT FOUND
+    } else if(!in_directory(http_URI(uri, request))) {
+        status = 404;
+
+    // Handle OK
+    } else {
+        status = 200;
+
+    }
+
+    // Log request
+    print_request(
+        "127.0.0.1",
+        port,
+        method,
+        protocol,
+        status,
+        http_reason(reason, status),
+        URI
+    );
+
     return 1;
 }

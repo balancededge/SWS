@@ -92,3 +92,20 @@ char* http_response(
     sprintf(buffer, "http/1.0 %d %s\r\n%s", status, reason, objects);
     return buffer;
 }
+/**
+ *
+ */
+ char* http_reason(char* buffer, const int status) {
+     switch(status) {
+        case 200:
+            strcpy(buffer, "OK");
+            break;
+        case 400:
+            strcpy(buffer, "BAD REQUEST");
+            break;
+        case 404:
+            strcpy(buffer, "NOT FOUND");
+            break;
+     }
+     return buffer;
+ }

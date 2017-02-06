@@ -13,5 +13,6 @@ char* http_response(
     const char* reason,
     const char* objects
 );
+char* http_reason(char* buffer, const int status);
 
 #endif

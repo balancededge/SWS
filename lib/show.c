@@ -71,6 +71,7 @@ int print_request(
         protocol,
         status,
         reason,
-        URI);
+        URI
+    );
     return EXIT_SUCCESS;
 }
