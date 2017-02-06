@@ -247,6 +247,9 @@ int handle_request() {
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
 
+    // Send response
+    printf(response);
+
     // Log request
     print_request(
         "127.0.0.1",
@@ -257,8 +260,6 @@ int handle_request() {
         reason,
         uri
     );
-
-    // Send response
 
     return 1;
 }
