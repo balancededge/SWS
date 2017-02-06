@@ -165,7 +165,7 @@ int start() {
     // Listen to stdin
     FD_SET(STDIN_FILENO, &read_fds);
     // Listen to socket
-    FD_SET(sock,         &read_fds);
+    FD_SET(&address,     &read_fds);
 
     while(1) {
         if(select(1, &read_fds, NULL, NULL, NULL) < 0) {
