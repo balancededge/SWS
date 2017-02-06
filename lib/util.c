@@ -6,10 +6,10 @@
 
 char* util_no_whitespace(char* buffer) {
     int i, j;
-    for(i = j = 0; buffer[j] != 0; j++) {
-        buffer[i] = buffer[j];
-        if(isspace(buffer[i])) {
-            i++;
+    for(i = j = 0; buffer[j] != 0; j) {
+        buffer[i] = buffer[j++];
+        while(isspace(buffer[j])) {
+            j++;
         }
     }
     return buffer;
