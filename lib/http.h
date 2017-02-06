@@ -1,13 +1,13 @@
-#ifndef SWS_FILE_H_
-#define SWS_FILE_H_
+#ifndef SWS_HTTP_H_
+#define SWS_HTTP_H_
 
 // Exports
 
-char* HTTP_method(char* buffer, const char* request);
-char* HTTP_URI(char* buffer, const char* request);
-char* HTTP_protocol(char* buffer, const char* request);
-char* HTTP_version(char* buffer, const char* request);
-char* HTTP_response(
+char* http_method(char* buffer, const char* request);
+char* http_URI(char* buffer, const char* request);
+char* http_protocol(char* buffer, const char* request);
+char* http_version(char* buffer, const char* request);
+char* http_response(
     char* buffer,
     const int status,
     const char* reason,

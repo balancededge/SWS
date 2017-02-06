@@ -10,11 +10,11 @@
  * block is written into the provided buffer.
  *
  * @param   char*       buffer  write buffer
- * @param   const char* request HTTP request to parse
+ * @param   const char* request http request to parse
  * @param   const int   block to write
  * @return  char*       buffer
  */
-char* HTTP_parse_block(char* buffer, const char* request, const int block) {
+char* http_parse_block(char* buffer, const char* request, const int block) {
 
     // vars
     int i, j;
@@ -41,14 +41,14 @@ char* HTTP_parse_block(char* buffer, const char* request, const int block) {
     return buffer;
 }
 /**
- * Returns the HTTP method of a request string.
+ * Returns the http method of a request string.
  *
  * @param   char*       buffer  write buffer
  * @param   const char* request request string
  * @return  char*       buffer
  */
-char* HTTP_method(char* buffer, const char* request) {
-    return HTTP_parse_block(buffer, request, 1);
+char* http_method(char* buffer, const char* request) {
+    return http_parse_block(buffer, request, 1);
 }
 /**
  * Returns the URI of a request string.
@@ -57,8 +57,8 @@ char* HTTP_method(char* buffer, const char* request) {
  * @param   const char* request request string
  * @return  char*       buffer
  */
-char* HTTP_URI(char* buffer, const char* request) {
-    HTTP_parse_block(buffer, request, 2);
+char* http_URI(char* buffer, const char* request) {
+    http_parse_block(buffer, request, 2);
 
     if(buffer[strlen(buffer) - 1] == '/') {
         strcpy(buffer + strlen(buffer), "index.html");
@@ -66,29 +66,29 @@ char* HTTP_URI(char* buffer, const char* request) {
     return buffer;
 }
 /**
- * Returns the HTTP protocol and version blocks of a request string.
+ * Returns the http protocol and version blocks of a request string.
  *
  * @param   char*       buffer  write buffer
  * @param   const char* request request string
  * @return  char*       buffer
  */
-char* HTTP_protocol(char* buffer, const char*request) {
-    return HTTP_parse_block(buffer, request, 3);
+char* http_protocol(char* buffer, const char*request) {
+    return http_parse_block(buffer, request, 3);
 }
 /**
- * Formats an HTTP response and places it into the provided BUFFER.
+ * Formats an http response and places it into the provided BUFFER.
  *
  * @param   char*       buffer  write buffer
- * @param   const int   status  HTTP response status (200, 400, 404)
+ * @param   const int   status  http response status (200, 400, 404)
  * @param   const char* reason  Status reason message
  * @param   const char* objects Any hTML objects to attach to the response
  */
-char* HTTP_response(
+char* http_response(
     char* buffer,
     const int status,
     const char* reason,
     const char* objects
 ) {
-    sprintf(buffer, "HTTP/1.0 %d %s\r\n%s", status, reason, objects);
+    sprintf(buffer, "http/1.0 %d %s\r\n%s", status, reason, objects);
     return buffer;
 }

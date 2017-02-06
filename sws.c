@@ -23,7 +23,6 @@
 // INCLUDES
 //============================================================================//
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -34,13 +33,8 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-// Library includes
 #include "lib/http.h"
-
-
-#if !defined(MAX_PATH)
-    #define MAX_PATH 4096
-#endif
+#include "lib/file.h"
 
 const char* SWS = "\n"
 "    _____      _____\n"
@@ -59,7 +53,6 @@ const char* SWS = "\n"
 
 // Arguments
 int ARG_is_port(const char* port);
-int ARG_is_directory(const char* directory);
 
 // Command line
 int SHOW_usage();
@@ -75,19 +68,9 @@ int SHOW_request(
     const char* URI
 );
 
-// File handling
-int FILE_is_file(const char* path);
-int FILE_is_directory(const char* path);
-int FILE_in_directory(const char* path);
-void FILE_full_path(char* buffer, const char* path);
-void FILE_read(char* buffer, const char* path);
-
 // Server
 int SERVER_configure();
 void SERVER_listen();
-
-// Testing
-int TEST_test();
 
 //============================================================================//
 // GLOBAL VARIABLES
@@ -95,7 +78,6 @@ int TEST_test();
 
 // Configuration
 int  CNFG_port;
-char CNFG_directory[MAX_PATH + 1];
 int  CNFG_sock;
 struct sockaddr_in CNFG_serveradd;
 ssize_t CNFG_recsize;
@@ -120,18 +102,19 @@ int main(const int argc, char* argv[]) {
     for(i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
             return SHOW_help();
-        } else if(strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "--test") == 0) {
-            return TEST_test();
         } else {
             break;
         }
     }
+    char* port = argv[i];
+    char* path = argv[i + 1];
 
     // Set config values
-    if(!ARG_is_port(argv[i])) {
+    if(!ARG_is_port(port)) {
         return EXIT_SUCCESS;
     }
-    if(!ARG_is_directory(argv[i + 1])) {
+    if(!configure_serving_path(path)) {
+        printf("The directory you entered: %s cannot be served from.", path);
         return EXIT_SUCCESS;
     }
 
@@ -225,34 +208,32 @@ void SERVER_listen() {
         char protocol[MAX_BUFFER];
         char URI[MAX_BUFFER];
         char reason[MAX_BUFFER];
+        char contents[MAX_BUFFER];
 
         strcpy(request, buffer);
-        HTTP_method(method, request);
-        HTTP_protocol(protocol, request);
-        HTTP_URI(URI, request);
+        http_method(method, request);
+        http_protocol(protocol, request);
+        http_URI(URI, request);
 
         printf("method: %s -> %d\n", method,   strcmp(method,   "GET"));
-        printf("method: %s -> %d\n", protocol, strcmp(protocol, "HTTP/1.0"));
+        printf("method: %s -> %d\n", protocol, strcmp(protocol, "http/1.0"));
 
         if(
             strcmp(method,   "GET"     ) != 0 ||
-            strcmp(protocol, "HTTP/1.0") != 0
+            strcmp(protocol, "http/1.0") != 0
         ) {
             status = 400;
             strcpy(reason, "BAD REQUEST");
-            HTTP_response(buffer, status, reason, "");
+            http_response(buffer, status, reason, "");
         } else if(
-            !FILE_in_directory(URI)
+            !in_directory(URI) || !read_file(contents, MAX_BUFFER, URI)
         ) {
             status = 404;
             strcpy(reason, "NOT FOUND");
-            HTTP_response(buffer, status, reason, "");
+            http_response(buffer, status, reason, "");
         } else {
             status = 200;
             strcpy(reason, "OK");
-
-            char contents[MAX_BUFFER];
-            FILE_read(contents, URI);
             printf("\n%s\n", contents);
 
             // Respond with file contents
@@ -291,19 +272,6 @@ int ARG_is_port(const char* port) {
     }
     printf("The port number you entered: %s is not valid. Please enter an\n"
            "integer between 0 and 65535.\n\n", port);
-    SHOW_usage();
-    return 0;
-}
-/**
- *
- */
-int ARG_is_directory(const char* directory) {
-    if(FILE_is_directory(directory)) {
-        realpath(directory, CNFG_directory);
-        chdir(CNFG_directory);
-        return 1;
-    }
-    printf("The directory you entered: %s is not valid.", directory);
     SHOW_usage();
     return 0;
 }
@@ -356,8 +324,8 @@ int SHOW_request(
     tm_info = localtime(&timer);
     //Sep 12 12:00:00
     strftime(buffer, 26, "%b %d %H:%M:%S", tm_info);
-    // time IP:Port method / protocol/version; HTTP/1.0 status reason; URI
-    printf("%s %s:%d %s / %s; HTTP/1.0 %d %s; %s\n",
+    // time IP:Port method / protocol/version; http/1.0 status reason; URI
+    printf("%s %s:%d %s / %s; http/1.0 %d %s; %s\n",
         buffer,
         IP,
         port,
@@ -367,240 +335,4 @@ int SHOW_request(
         reason,
         URI);
     return EXIT_SUCCESS;
-}
-//============================================================================//
-// FILE HANDLING
-//============================================================================//
-/**
- * Determines whether a given path points to an exsisting file.
- *
- * @param   const char* path    path to file
- * @return  int                 true if file exsists
- */
-int FILE_is_file(const char* path) {
-    struct stat path_stat;
-    return stat(path, &path_stat) == 0 && S_ISREG(path_stat.st_mode);
-}
-/**
- * Determines whether a given path points to an exsisting directory.
- *
- * @param   const char* path    path to directory
- * @return  int                 true if directory exsists
- */
-int FILE_is_directory(const char* path) {
-    struct stat path_stat;
-    return stat(path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode);
-}
-/**
- * Determines whether a given path points to a file within the serving
- * directory.
- *
- * @param   const char* path    path to file
- */
-int FILE_in_directory(const char* path) {
-    char full_path[MAX_PATH + 1];
-    FILE_full_path(full_path, path);
-    return
-        !strncmp(CNFG_directory, full_path, strlen(CNFG_directory)) &&
-        FILE_is_file(full_path);
-}
-/**
- *
- */
-void FILE_full_path(char* buffer, const char* path) {
-    char tmp[MAX_PATH + 1];
-    sprintf(tmp, "%s%s", CNFG_directory, path);
-    realpath(tmp, buffer);
-}
-
-void FILE_read(char* buffer, const char* path) {
-    long file_size;
-    char full_path[MAX_PATH + 1];
-    long length;
-
-    FILE_full_path(full_path, path);
-
-    FILE* file = fopen(full_path, "rb");
-    if(file) {
-        fseek(file, 0, SEEK_END);
-        file_size = ftell(file);
-        fseek(file, 0, SEEK_SET);
-        fread(
-            buffer,
-            1,
-            MAX_BUFFER - 1 > file_size
-            ? file_size
-            : MAX_BUFFER - 1,
-            file
-        );
-    }
-    fclose(file);
-}
-
-//============================================================================//
-// TESTS
-//============================================================================//
-
-#define PASS        TEST_results[TEST_index++] = 1; \
-                    printf("Passed %s\n", __func__); \
-                    return
-#define FAIL        TEST_results[TEST_index++] = 0; \
-                    printf("Failed %s at line: %d\n", __func__, __LINE__); \
-                    return
-#define ASSERT(_a)  if(!(_a)) { FAIL; }
-
-
-int TEST_index = 0;
-int TEST_results[MAX_BUFFER];
-
-void test_ARG_is_port() {
-    // Valid ports
-    ASSERT(ARG_is_port("0"));
-    ASSERT(ARG_is_port("65535"));
-    ASSERT(ARG_is_port("32000"));
-    // Different formatting
-    ASSERT(ARG_is_port(" 1"));
-    ASSERT(ARG_is_port("65534 "));
-    ASSERT(ARG_is_port(" 32001 "));
-    // Invalid ports
-    ASSERT(!ARG_is_port("-1"));
-    ASSERT(!ARG_is_port("65536"));
-    ASSERT(!ARG_is_port("Hello World"));
-    PASS;
-}
-
-void test_ARG_is_directory() {
-    // Valid directories
-    ASSERT(ARG_is_directory("."));
-    ASSERT(ARG_is_directory(".."));
-    // Invalid directories
-    ASSERT(!ARG_is_directory("sws.c"));
-    ASSERT(!ARG_is_directory("Hello World"));
-    PASS;
-}
-
-void test_HTTP_method() {
-    // Parse request
-    char* request = "GET /dir/test HTTP/1.0";
-    char buffer[MAX_BUFFER];
-    HTTP_method(buffer, request);
-    // Assert method
-    ASSERT(strcmp("GET", buffer) == 0);
-    PASS;
-}
-
-void test_HTTP_URI() {
-    // Parse request
-    char* request1 = "GET /dir/test HTTP/1.0";
-    char buffer[MAX_BUFFER];
-    HTTP_URI(buffer, request1);
-    // Assert URI
-    ASSERT(strcmp("/dir/test", buffer) == 0);
-    // Parse request
-    char* request2 = "GET /dir/ HTTP/1.0";
-    HTTP_URI(buffer, request2);
-    // Assert URI
-    ASSERT(strcmp("/dir/index.html", buffer) == 0);
-    PASS;
-}
-
-void test_HTTP_protocol() {
-    // Parse request
-    char* request = "GET /dir/test HTTP/1.0";
-    char buffer[MAX_BUFFER];
-    HTTP_protocol(buffer, request);
-    // Assert protocol
-    ASSERT(strcmp("HTTP", buffer) == 0);
-    PASS;
-}
-
-void test_HTTP_response() {
-    // Build response
-    char buffer[MAX_BUFFER];
-    HTTP_response(buffer, 200, "OK", "<!DOCTYPE HTML><html>Hello World!!!</html>");
-    // Assert response
-    ASSERT(strcmp("HTTP/1.0 200 OK\r\n<!DOCTYPE HTML><html>Hello World!!!</html>", buffer) == 0);
-    PASS;
-}
-
-void test_FILE_is_file() {
-    // Valid files
-    ASSERT(FILE_is_file("sws.c"));
-    ASSERT(FILE_is_file("README.md"));
-    ASSERT(FILE_is_file("./../SWS/sws.c"));
-    // Invalid files
-    ASSERT(!FILE_is_file("not_a_file.c"));
-    ASSERT(!FILE_is_file("."));
-    ASSERT(!FILE_is_file("Hello World"));
-    PASS;
-}
-
-void test_FILE_is_directory() {
-    // Valid directories
-    ASSERT(FILE_is_directory("."));
-    ASSERT(FILE_is_directory(".."));
-    ASSERT(FILE_is_directory("test"));
-    // Invalid directories
-    ASSERT(!FILE_is_directory("sws.c"));
-    ASSERT(!FILE_is_directory("Hello World"));
-    ASSERT(!FILE_is_directory("test/index.html"))
-    PASS;
-}
-
-void test_FILE_in_directory() {
-    ARG_is_directory(".");
-    // Valid files
-    ASSERT(FILE_in_directory("sws.c"));
-    ASSERT(FILE_in_directory("README.md"));
-    ASSERT(FILE_in_directory("./../SWS/sws.c"));
-    ASSERT(FILE_in_directory("test/index.html"));
-    // Invalid files
-    ASSERT(!FILE_in_directory("./not_a_file.c"));
-    ASSERT(!FILE_in_directory(".."));
-    ASSERT(!FILE_in_directory(".."));
-    ASSERT(!FILE_in_directory("./Hello World"));
-    PASS;
-}
-
-int TEST_test() {
-
-    printf("Running Tests\n"
-           "=============\n\n");
-
-    // Run tests
-    test_ARG_is_port();
-    test_ARG_is_directory();
-    test_HTTP_method();
-    test_HTTP_URI();
-    test_HTTP_protocol();
-    test_HTTP_response();
-    test_FILE_is_file();
-    test_FILE_is_directory();
-    test_FILE_in_directory();
-
-    printf("\nTest Summary\n"
-           "============\n");
-
-    // Show summary
-    int i;
-    for(i = 0; i < TEST_index; i++) {
-        printf(TEST_results[i] ? "." : "E");
-    }
-    printf("\n\n");
-
-    //========================================================================//
-    // WORKING CODE SPACE
-    //========================================================================//
-
-    SHOW_request(
-        "127.0.0.1",
-        3200,
-        "GET",
-        "HTML/1.0",
-        404,
-        "NOT FOUND",
-        "/not_a_file");
-    return EXIT_SUCCESS;
-
-    //========================================================================//
 }
