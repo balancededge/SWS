@@ -264,7 +264,6 @@ int start() {
 }
 
 int handle_user() {
-    /*
     char buffer[MAX_BUFFER];
     fgets(buffer, MAX_BUFFER - 1, stdin);
     util_no_whitespace(buffer);
@@ -272,7 +271,6 @@ int handle_user() {
         printf("Exiting...\n");
         return 0;
     }
-    */
     return 1;
 }
 
