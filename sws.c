@@ -248,7 +248,7 @@ int handle_request() {
     http_response(response, status, http_reason(reason, status), objects);
 
     // Send response
-    printf(response);
+    LOG(response);
 
     // Log request
     print_request(
