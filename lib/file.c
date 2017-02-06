@@ -63,11 +63,11 @@ int is_directory(const char* path) {
  * @return  int                 if path is a file within the serving directory
  */
 int in_directory(const char* path) {
-    char full_path[MAX_PATH + 1];
-    full_path(full_path, path);
+    char full[MAX_PATH + 1];
+    full_path(full, path);
     return
-        !strncmp(SERVING_PATH, full_path, strlen(SERVING_PATH)) &&
-        is_file(full_path);
+        !strncmp(SERVING_PATH, full, strlen(SERVING_PATH)) &&
+        is_file(full);
 }
 /**
  * Reads the contents of a file into a buffer.
@@ -80,10 +80,10 @@ int in_directory(const char* path) {
 int read_file(char* buffer, const int n, const char* path) {
 
     long file_size;
-    char full_path[MAX_PATH + 1];
-    full_path(full_path, path);
+    char full[MAX_PATH + 1];
+    full_path(full, path);
 
-    FILE* file = fopen(full_path, "rb");
+    FILE* file = fopen(full, "rb");
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
