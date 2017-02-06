@@ -113,7 +113,7 @@ int main(const int argc, char* argv[]) {
     if(!ARG_is_port(port)) {
         return EXIT_SUCCESS;
     }
-    if(!configure_serving_path(path)) {
+    if(!set_serving_path(path)) {
         printf("The directory you entered: %s cannot be served from.", path);
         return EXIT_SUCCESS;
     }
