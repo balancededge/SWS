@@ -177,8 +177,6 @@ int start() {
         }
         if(FD_ISSET(sock, &file_descriptors) && !handle_request()) {
             break;
-        } else {
-            FD_CLR(sock, &file_descriptors);
         }
     }
 }
