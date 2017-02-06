@@ -149,7 +149,7 @@ int set_address() {
     sock_length             = sizeof(address);
 
     // Try and bind
-    if (bind(sock, (struct sockaddr *)&address, sizeof address) < 0) {
+    if(bind(sock, (struct sockaddr *) &address, sock_length) < 0) {
         printf("Failed to bind on %d:%d.", INADDR_ANY, port);
         close(sock);
         return 0;
