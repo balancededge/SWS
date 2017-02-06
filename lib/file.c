@@ -2,10 +2,11 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <limits.h>
-#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "file.h"
+
+#define MAX_PATH 4096
 
 char SERVING_PATH[MAX_PATH + 1];
 
@@ -16,7 +17,7 @@ char SERVING_PATH[MAX_PATH + 1];
  */
 int configure_serving_path(const char* path) {
     if(is_directory(path)) {
-        realpath(SERVING_PATH, path);
+        realpath(path, SERVING_PATH);
         return 1;
     }
     return 0;
