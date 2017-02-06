@@ -165,19 +165,17 @@ int start() {
     // Listen to stdin
     FD_SET(STDIN_FILENO, &read_fds);
     // Listen to socket
-    FD_SET(&address,     &read_fds);
+    FD_SET(sock,         &read_fds);
 
     while(1) {
         if(select(1, &read_fds, NULL, NULL, NULL) < 0) {
             print_select_error();
             break;
         }
-        if(FD_ISSET(STDIN_FILENO, &read_fds)) {
-            if(!handle_user()) {
-                break;
-            }
+        if(FD_ISSET(STDIN_FILENO, &read_fds) && !handle_user()) {
+            break;
         }
-        if(!handle_request()) {
+        if(FD_ISSET(sock, &read_fds) && !handle_request()) {
             break;
         }
     }
