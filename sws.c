@@ -216,11 +216,11 @@ void SERVER_listen() {
         http_URI(URI, request);
 
         printf("method: %s -> %d\n", method,   strcmp(method,   "GET"));
-        printf("method: %s -> %d\n", protocol, strcmp(protocol, "http/1.0"));
+        printf("method: %s -> %d\n", protocol, strcmp(protocol, "GTTP/1.0"));
 
         if(
             strcmp(method,   "GET"     ) != 0 ||
-            strcmp(protocol, "http/1.0") != 0
+            strcmp(protocol, "HTTP/1.0") != 0
         ) {
             status = 400;
             strcpy(reason, "BAD REQUEST");
