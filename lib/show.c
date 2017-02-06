@@ -17,7 +17,6 @@ int print_title(char* version) {
            "  361 Computer Networks course.\n\n",
            version
     );
-    printf("Usage:\n  $ ./sws [flags] <port> <directory>\n\n");
     return EXIT_SUCCESS;
 }
 
@@ -36,7 +35,7 @@ int print_help() {
 
 int print_running(const int port, const char* path) {
     printf("SWS is running on UDP port %d and serving %s\n"
-           "press ‘q’ to quit ...", port, path
+           "press ‘q’ to quit ...\n", port, path
     );
     return EXIT_SUCCESS;
 }
