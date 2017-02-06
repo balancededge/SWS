@@ -70,7 +70,6 @@ int SHOW_request(
     const int port,
     const char* method,
     const char* protocol,
-    const char* version,
     const int status,
     const char* reason,
     const char* URI
@@ -224,24 +223,20 @@ void SERVER_listen() {
         char request[MAX_BUFFER];
         char method[MAX_BUFFER];
         char protocol[MAX_BUFFER];
-        char version[MAX_BUFFER];
         char URI[MAX_BUFFER];
         char reason[MAX_BUFFER];
 
         strcpy(request, buffer);
         HTTP_method(method, request);
         HTTP_protocol(protocol, request);
-        HTTP_version(version, request);
         HTTP_URI(URI, request);
 
         printf("method: %s -> %d\n", method,   strcmp(method,   "GET"));
-        printf("method: %s -> %d\n", protocol, strcmp(protocol, "HTTP"));
-        printf("method: %s -> %d\n", version,  strcmp(version,  "1.0"));
+        printf("method: %s -> %d\n", protocol, strcmp(protocol, "HTTP/1.0"));
 
         if(
-            strcmp(method,   "GET" ) != 0 ||
-            strcmp(protocol, "HTTP") != 0 ||
-            strcmp(version,  "1.0" ) != 0
+            strcmp(method,   "GET"     ) != 0 ||
+            strcmp(protocol, "HTTP/1.0") != 0
         ) {
             status = 400;
             strcpy(reason, "BAD REQUEST");
@@ -268,7 +263,6 @@ void SERVER_listen() {
             CNFG_port,
             method,
             protocol,
-            version,
             status,
             reason,
             URI
@@ -350,7 +344,6 @@ int SHOW_request(
     const int port,
     const char* method,
     const char* protocol,
-    const char* version,
     const int status,
     const char* reason,
     const char* URI
@@ -364,13 +357,12 @@ int SHOW_request(
     //Sep 12 12:00:00
     strftime(buffer, 26, "%b %d %H:%M:%S", tm_info);
     // time IP:Port method / protocol/version; HTTP/1.0 status reason; URI
-    printf("%s %s:%d %s / %s/%s; HTTP/1.0 %d %s; %s\n",
+    printf("%s %s:%d %s / %s; HTTP/1.0 %d %s; %s\n",
         buffer,
         IP,
         port,
         method,
         protocol,
-        version,
         status,
         reason,
         URI);
@@ -522,16 +514,6 @@ void test_HTTP_protocol() {
     PASS;
 }
 
-void test_HTTP_version() {
-    // Parse request
-    char* request = "GET /dir/test HTTP/1.0";
-    char buffer[MAX_BUFFER];
-    HTTP_version(buffer, request);
-    // Assert version
-    ASSERT(strcmp("1.0", buffer) == 0);
-    PASS;
-}
-
 void test_HTTP_response() {
     // Build response
     char buffer[MAX_BUFFER];
@@ -615,8 +597,7 @@ int TEST_test() {
         "127.0.0.1",
         3200,
         "GET",
-        "HTML",
-        "1.0",
+        "HTML/1.0",
         404,
         "NOT FOUND",
         "/not_a_file");

@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "http.h"
 
-#define MAX_BUFFER 1024
+#define MAX_URL 2000
 
 /**
  * Divides a request string into blocks based off whitespace. The requested
@@ -12,15 +12,16 @@
  * @param   char*       buffer  write buffer
  * @param   const char* request HTTP request to parse
  * @param   const int   block to write
+ * @return  char*       buffer
  */
-void HTTP_parse_block(char* buffer, const char* request, const int block) {
+char* HTTP_parse_block(char* buffer, const char* request, const int block) {
 
     // vars
     int i, j;
     int in_block = 0;
     int current_block = 0;
 
-    for(i = j = 0; i < strlen(request) && i < MAX_BUFFER; i++) {
+    for(i = j = 0; i < strlen(request) && i < MAX_URL; i++) {
         if(isspace(request[i])) {
             in_block = 0;
             continue;
@@ -37,13 +38,25 @@ void HTTP_parse_block(char* buffer, const char* request, const int block) {
         }
     }
     buffer[j] = 0;
-}
-
-char* HTTP_method(char* buffer, const char* request) {
-    HTTP_parse_block(buffer, request, 1);
     return buffer;
 }
-
+/**
+ * Returns the HTTP method of a request string.
+ *
+ * @param   char*       buffer  write buffer
+ * @param   const char* request request string
+ * @return  char*       buffer
+ */
+char* HTTP_method(char* buffer, const char* request) {
+    return HTTP_parse_block(buffer, request, 1);
+}
+/**
+ * Returns the URI of a request string.
+ *
+ * @param   char*       buffer  write buffer
+ * @param   const char* request request string
+ * @return  char*       buffer
+ */
 char* HTTP_URI(char* buffer, const char* request) {
     HTTP_parse_block(buffer, request, 2);
 
@@ -52,34 +65,15 @@ char* HTTP_URI(char* buffer, const char* request) {
     }
     return buffer;
 }
-
+/**
+ * Returns the HTTP protocol and version blocks of a request string.
+ *
+ * @param   char*       buffer  write buffer
+ * @param   const char* request request string
+ * @return  char*       buffer
+ */
 char* HTTP_protocol(char* buffer, const char*request) {
-    HTTP_parse_block(buffer, request, 3);
-
-    int i;
-    for(i = 0; i < strlen(buffer) && i < MAX_BUFFER; i++) {
-        if(buffer[i] == '/') {
-            buffer[i] = 0;
-        }
-    }
-    return buffer;
-}
-
-char* HTTP_version(char* buffer, const char* request) {
-    HTTP_parse_block(buffer, request, 3);
-
-    int i, j;
-    int in_version = 0;
-    for(i = j = 0; i < strlen(buffer) && i < MAX_BUFFER; i++) {
-        if(in_version) {
-            buffer[j++] = buffer[i];
-        }
-        if(buffer[i] == '/') {
-            in_version = 1;
-        }
-    }
-    buffer[j] = 0;
-    return buffer;
+    return HTTP_parse_block(buffer, request, 3);
 }
 /**
  * Formats an HTTP response and places it into the provided BUFFER.
