@@ -20,6 +20,7 @@ int set_serving_path(const char* path) {
         realpath(path, SERVING_PATH);
         return 1;
     }
+    printf("The directory you entered: %s cannot be served from.", path);
     return 0;
 }
 /**

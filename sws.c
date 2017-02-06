@@ -16,9 +16,9 @@
 // ===========================================================================//
 
 #define TODO       printf("TODO line: %d", __LINE__)
-#define MAX_BUFFER 1024
+#define MAX_BUFFER 2000
 #define LOG(_x)    printf("%s\n", _x); fflush(stdout)
-#define VERSION "0.0.2"
+#define VERSION    "0.0.2"
 
 //============================================================================//
 // INCLUDES
@@ -36,6 +36,7 @@
 #include "lib/http.h"
 #include "lib/file.h"
 #include "lib/show.h"
+#include "lib/util.h"
 
 //============================================================================//
 // PROTOTYPES
@@ -53,11 +54,11 @@ void SERVER_listen();
 //============================================================================//
 
 // Configuration
-int  CNFG_port;
-int  CNFG_sock;
-struct sockaddr_in CNFG_serveradd;
-ssize_t CNFG_recsize;
-socklen_t CNFG_fromlen;
+int       port;
+int       sock;
+struct    address;
+ssize_t   recsize;
+socklen_t sock_length;
 
 //============================================================================//
 // PROGRAM MAIN
@@ -75,7 +76,6 @@ int main(const int argc, char* argv[]) {
     if(argc == 1) {
         return print_usage();
     }
-
     for(i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
             return print_help();;
@@ -86,80 +86,31 @@ int main(const int argc, char* argv[]) {
     char* port = argv[i];
     char* path = argv[i + 1];
 
-    // Set config values
-    if(!ARG_is_port(port)) {
-        return EXIT_SUCCESS;
+    // Configure port and serving path
+    if(!set_port(port) || !set_serving_path(path)) {
+        print_usage();
+        return EXIT_FAILURE;
     }
-    if(!set_serving_path(path)) {
-        printf("The directory you entered: %s cannot be served from.", path);
-        return EXIT_SUCCESS;
+
+    // Configure socket and address
+    if(!set_socket() || !set_address()) {
+        return EXIT_FAILURE;
     }
 
     // Start the Server
-    LOG("Starting server configuration");
-    if(SERVER_configure()) {
-        LOG("Starting server listening");
-        SERVER_listen();
-    };
+    print_running(port, path);
+    start();
 
     return EXIT_SUCCESS;
 }
-
-//============================================================================//
-// SERVER
-//============================================================================//
 /**
  *
- */
-int SERVER_configure() {
-
-    // Create socket
-    CNFG_sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    // Check that we succeeded
-    if(CNFG_sock < 0) {
-        printf("Failed to open socket. Exiting...");
-        return 0;
-    }
-    // Let go of socket on exit/crash
-    int option = 1;
-    setsockopt(
-        CNFG_sock,
-        SOL_SOCKET,
-        SO_REUSEADDR,
-        (const void *)&option ,
-        sizeof(int)
-    );
-    // Clear garbage
-    memset(&CNFG_serveradd, 0, sizeof CNFG_serveradd);
-
-    // build address
-    CNFG_serveradd.sin_family      = AF_INET;
-    CNFG_serveradd.sin_addr.s_addr = htonl(INADDR_ANY);
-    CNFG_serveradd.sin_port        = htons(CNFG_port);
-    CNFG_fromlen                   = sizeof(CNFG_serveradd);
-
-    // Try and bind
-    if (bind(
-        CNFG_sock,
-        (struct sockaddr *)&CNFG_serveradd,
-        sizeof CNFG_serveradd
-    ) < 0) {
-        printf("Failed to bind on %d:%d.", INADDR_ANY, CNFG_port);
-        close(CNFG_sock);
-        return 0;
-    }
-    return 1;
-}
-/**
  *
- */
 void SERVER_listen() {
 
     char buffer[MAX_BUFFER];
     int select_result;
-    fd_set read_fds;
-    FD_ZERO(&read_fds);
-    FD_SET(STDIN_FILENO, &read_fds);
+
 
     LOG("Entering main loop");
     while(1) {
@@ -229,26 +180,95 @@ void SERVER_listen() {
     close(CNFG_sock);
     return;
 }
+*/
 
-//============================================================================//
-// ARGUMENTS
-//============================================================================//
-/**
- * @param const char*   port    port number
- * @returns
- */
-int ARG_is_port(const char* port) {
-
-    const int port_num = (int) strtol(port, (char**) NULL, 10);
-
-    if(strcmp(port, "0") == 0 || port_num != 0) {
+int set_port(const char* arg) {
+    const int port_num = (int) strtol(arg, (char**) NULL, 10);
+    if(strcmp(arg, "0") == 0 || port_num != 0) {
         if(port_num >= 0 && port_num <= 65535) {
-            CNFG_port = port_num;
+            port = port_num;
             return 1;
         }
     }
     printf("The port number you entered: %s is not valid. Please enter an\n"
-           "integer between 0 and 65535.\n\n", port);
-    print_usage();
+           "integer between 0 and 65535.\n\n", port
+    );
     return 0;
+}
+
+int set_socket() {
+    // Create socket
+    sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    // Check that we succeeded
+    if(sock < 0) {
+        printf("Failed to open socket. Exiting...");
+        return 0;
+    }
+
+    // Let go of socket on exit/crash
+    int option = 1;
+    setsockopt(
+        CNFG_sock,
+        SOL_SOCKET,
+        SO_REUSEADDR,
+        (const void *)&option ,
+        sizeof(int)
+    );
+    return  1;
+}
+
+int set_address() {
+    // Clear space
+    memset(&address, 0, sizeof address);
+
+    // build address
+    address.sin_family      = AF_INET;
+    address.sin_addr.s_addr = htonl(INADDR_ANY);
+    address.sin_port        = htons(port);
+    CNFG_fromlen            = sizeof(address);
+
+    // Try and bind
+    if (bind(sock, (struct sockaddr *)&address, sizeof address) < 0) {
+        printf("Failed to bind on %d:%d.", INADDR_ANY, port);
+        close(sock);
+        return 0;
+    }
+    return 1;
+}
+
+int start() {
+
+    fd_set read_fds;
+    // Clear fd
+    FD_ZERO(&read_fds);
+    // Listen to stdin
+    FD_SET(STDIN_FILENO, &read_fds);
+    // Listen to socket
+    FD_SET(sock,         &read_fds);
+
+    while(1) {
+        if(select(1, &read_fds, NULL, NULL, NULL) < 0) {
+            print_select_error();
+            break;
+        }
+        if(!handle_user() || !handle_request()) {
+            break;
+        }
+    }
+}
+
+int handle_user() {
+    char buffer[MAX_BUFFER];
+    fgets(buffer, MAX_BUFFER - 1, stdin);
+    util_no_whitespace(buffer);
+
+    if(strcmp(buffer, "q") == 0) {
+        printf("Exiting...\n");
+        break;
+    }
+}
+
+int handle_request() {
+
 }

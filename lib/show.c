@@ -35,9 +35,14 @@ int print_help() {
 }
 
 int print_running(const int port, const char* path) {
-    printf("sws is running on UDP port %d and serving %s\n"
+    printf("SWS is running on UDP port %d and serving %s\n"
            "press ‘q’ to quit ...", port, path
     );
+    return EXIT_SUCCESS;
+}
+
+int print_select_error() {
+    printf("Error: select returned error code\n");
     return EXIT_SUCCESS;
 }
 
