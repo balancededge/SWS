@@ -27,7 +27,6 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <time.h>
 #include <ctype.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -35,17 +34,7 @@
 #include <netinet/in.h>
 #include "lib/http.h"
 #include "lib/file.h"
-
-const char* SWS = "\n"
-"    _____      _____\n"
-"   / __\\ \\ /\\ / / __|\n"
-"   \\__ \\\\ V  V /\\__ \\\n"
-"   |___/ \\_/\\_/ |___/\n"
-"                     @author Eric Buss\n"
-"                     @version 0.0.1\n"
-"\n"
-"  A Simple Web Server. Developed as part of the University of Victoria's CSC\n"
-"  361 Computer Networks course.\n\n";
+#include "lib/show.h"
 
 //============================================================================//
 // PROTOTYPES
@@ -53,20 +42,6 @@ const char* SWS = "\n"
 
 // Arguments
 int ARG_is_port(const char* port);
-
-// Command line
-int SHOW_usage();
-int SHOW_help();
-int SHOW_running();
-int SHOW_request(
-    const char* IP,
-    const int port,
-    const char* method,
-    const char* protocol,
-    const int status,
-    const char* reason,
-    const char* URI
-);
 
 // Server
 int SERVER_configure();
@@ -90,18 +65,19 @@ socklen_t CNFG_fromlen;
  * Program entry point.
  */
 int main(const int argc, char* argv[]) {
-    printf("%s", SWS);
+
+    print_title();
 
     int i;
 
     // Parse command line options
     if(argc == 1) {
-        return SHOW_usage();
+        return print_usage();
     }
 
     for(i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            return SHOW_help();
+            return print_help();;
         } else {
             break;
         }
@@ -274,65 +250,4 @@ int ARG_is_port(const char* port) {
            "integer between 0 and 65535.\n\n", port);
     SHOW_usage();
     return 0;
-}
-
-//============================================================================//
-// COMMAND LINE
-//============================================================================//
-/**
- *
- */
-int SHOW_usage() {
-    printf("Usage:\n  $ ./sws [flags] <port> <directory>\n\n");
-    return EXIT_SUCCESS;
-}
-/**
- *
- */
-int SHOW_help() {
-    SHOW_usage();
-    printf("Option:\n"
-           "  -h  --help  Show usage and options\n"
-           "  -t  --test  Run tests\n");
-    return EXIT_SUCCESS;
-}
-/**
- *
- */
-int SHOW_running() {
-    printf("sws is running on UDP port %d and serving %s\n"
-    "press ‘q’ to quit ...", CNFG_port, get_serving_path());
-    return EXIT_SUCCESS;
-}
-/**
- *
- */
-int SHOW_request(
-    const char* IP,
-    const int port,
-    const char* method,
-    const char* protocol,
-    const int status,
-    const char* reason,
-    const char* URI
-) {
-    time_t timer;
-    char buffer[26];
-    struct tm* tm_info;
-
-    time(&timer);
-    tm_info = localtime(&timer);
-    //Sep 12 12:00:00
-    strftime(buffer, 26, "%b %d %H:%M:%S", tm_info);
-    // time IP:Port method / protocol/version; http/1.0 status reason; URI
-    printf("%s %s:%d %s / %s; http/1.0 %d %s; %s\n",
-        buffer,
-        IP,
-        port,
-        method,
-        protocol,
-        status,
-        reason,
-        URI);
-    return EXIT_SUCCESS;
 }
