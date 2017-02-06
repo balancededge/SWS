@@ -54,11 +54,11 @@ void SERVER_listen();
 //============================================================================//
 
 // Configuration
-int       port;
-int       sock;
-struct    address;
-ssize_t   recsize;
-socklen_t sock_length;
+int                port;
+int                sock;
+struct sockaddr_in address;
+ssize_t            recsize;
+socklen_t          sock_length;
 
 //============================================================================//
 // PROGRAM MAIN
@@ -83,11 +83,11 @@ int main(const int argc, char* argv[]) {
             break;
         }
     }
-    char* port = argv[i];
-    char* path = argv[i + 1];
+    char* parsed_port = argv[i];
+    char* parsed_path = argv[i + 1];
 
     // Configure port and serving path
-    if(!set_port(port) || !set_serving_path(path)) {
+    if(!set_port(parsed_port) || !set_serving_path(parsed_path)) {
         print_usage();
         return EXIT_FAILURE;
     }
@@ -98,7 +98,7 @@ int main(const int argc, char* argv[]) {
     }
 
     // Start the Server
-    print_running(port, path);
+    print_running(port, parsed_path);
     start();
 
     return EXIT_SUCCESS;
@@ -183,14 +183,13 @@ void SERVER_listen() {
 */
 
 int set_port(const char* arg) {
-    const int port_num = (int) strtol(arg, (char**) NULL, 10);
-    if(strcmp(arg, "0") == 0 || port_num != 0) {
-        if(port_num >= 0 && port_num <= 65535) {
-            port = port_num;
+    port = (int) strtol(arg, (char**) NULL, 10);
+    if(strcmp(arg, "0") == 0 || port != 0) {
+        if(port >= 0 && port <= 65535) {
             return 1;
         }
     }
-    printf("The port number you entered: %s is not valid. Please enter an\n"
+    printf("The port number you entered: %d is not valid. Please enter an\n"
            "integer between 0 and 65535.\n\n", port
     );
     return 0;
@@ -209,7 +208,7 @@ int set_socket() {
     // Let go of socket on exit/crash
     int option = 1;
     setsockopt(
-        CNFG_sock,
+        sock,
         SOL_SOCKET,
         SO_REUSEADDR,
         (const void *)&option ,
@@ -226,7 +225,7 @@ int set_address() {
     address.sin_family      = AF_INET;
     address.sin_addr.s_addr = htonl(INADDR_ANY);
     address.sin_port        = htons(port);
-    CNFG_fromlen            = sizeof(address);
+    sock_length             = sizeof(address);
 
     // Try and bind
     if (bind(sock, (struct sockaddr *)&address, sizeof address) < 0) {
@@ -265,10 +264,11 @@ int handle_user() {
 
     if(strcmp(buffer, "q") == 0) {
         printf("Exiting...\n");
-        break;
+        return 0;
     }
+    return 1;
 }
 
 int handle_request() {
-
+    return 1;
 }
