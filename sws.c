@@ -277,6 +277,7 @@ int handle_request() {
 
     char reason[MAX_BUFFER];
     char method[MAX_BUFFER];
+    char protocol[MAX_BUFFER];
     char uri[MAX_BUFFER];
     char request[MAX_BUFFER];
 
