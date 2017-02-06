@@ -10,13 +10,20 @@
 #define MAX_PATH 4096
 
 char SERVING_PATH[MAX_PATH + 1];
-
+/**
+ * Get the directory currently being served.
+ *
+ * @return  char*       serving path
+ */
+char* get_serving_path() {
+    return SERVING_PATH;
+}
 /**
  * Configure the directory that files will be served from.
  *
  * @param   char*  path to directory
  */
-int configure_serving_path(const char* path) {
+int set_serving_path(const char* path) {
     if(is_directory(path)) {
         realpath(path, SERVING_PATH);
         return 1;

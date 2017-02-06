@@ -2,8 +2,8 @@
 #define SWS_FILE_H_
 
 // Exports
-char* SERVING_PATH;
-int configure_serving_path(const char* path);
+char* get_serving_path();
+int set_serving_path(const char* path);
 int is_file(const char* path);
 int is_directory(const char* path);
 int in_directory(const char* path);

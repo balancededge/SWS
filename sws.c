@@ -301,7 +301,7 @@ int SHOW_help() {
  */
 int SHOW_running() {
     printf("sws is running on UDP port %d and serving %s\n"
-    "press ‘q’ to quit ...", CNFG_port, SERVING_PATH);
+    "press ‘q’ to quit ...", CNFG_port, get_serving_path());
     return EXIT_SUCCESS;
 }
 /**
