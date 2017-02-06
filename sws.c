@@ -262,7 +262,7 @@ int handle_user() {
     fgets(buffer, MAX_BUFFER - 1, stdin);
     util_no_whitespace(buffer);
     LOG(buffer);
-    pritnf("%d\n", strcmp(buffer, "q"));
+    printf("%d\n", strcmp(buffer, "q"));
     printf("%d\n", strcmp(buffer, "\n"));
 
     if(strcmp(buffer, "q") == 0) {
