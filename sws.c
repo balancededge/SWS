@@ -159,23 +159,23 @@ int set_address() {
 
 int start() {
 
-    fd_set read_fds;
+    fd_set file_descriptors;
     // Clear fd
-    FD_ZERO(&read_fds);
+    FD_ZERO(&file_descriptors);
     // Listen to stdin
-    FD_SET(STDIN_FILENO, &read_fds);
+    FD_SET(STDIN_FILENO, &file_descriptors);
     // Listen to socket
-    FD_SET(sock,         &read_fds);
+    FD_SET(sock,         &file_descriptors);
 
     while(1) {
-        if(select(sock + 1, &read_fds, NULL, NULL, NULL) < 0) {
+        if(select(sock + 1, &file_descriptors, NULL, NULL, NULL) < 0) {
             print_select_error();
             break;
         }
-        if(FD_ISSET(STDIN_FILENO, &read_fds) && !handle_user()) {
+        if(FD_ISSET(STDIN_FILENO, &file_descriptors) && !handle_user()) {
             break;
         }
-        if(FD_ISSET(sock, &read_fds) && !handle_request()) {
+        if(FD_ISSET(sock, &file_descriptors) && !handle_request()) {
             break;
         }
     }
@@ -185,6 +185,7 @@ int handle_user() {
     char buffer[MAX_BUFFER];
     fgets(buffer, MAX_BUFFER - 1, stdin);
     util_no_whitespace(buffer);
+    LOG("HI");
     if(strcmp(buffer, "q") == 0) {
         printf("Exiting...\n");
         return 0;
