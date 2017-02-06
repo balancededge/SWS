@@ -42,18 +42,17 @@
 // PROTOTYPES
 //============================================================================//
 
-// Arguments
-int ARG_is_port(const char* port);
-
-// Server
-int SERVER_configure();
-void SERVER_listen();
+int set_port(const char* arg);
+int set_socket();
+int set_address();
+int start();
+int handle_user();
+int handle_request();
 
 //============================================================================//
-// GLOBAL VARIABLES
+// VARIABLES
 //============================================================================//
 
-// Configuration
 int                port;
 int                sock;
 struct sockaddr_in address;
@@ -103,84 +102,6 @@ int main(const int argc, char* argv[]) {
 
     return EXIT_SUCCESS;
 }
-/**
- *
- *
-void SERVER_listen() {
-
-    char buffer[MAX_BUFFER];
-    int select_result;
-
-
-    LOG("Entering main loop");
-    while(1) {
-
-        LOG("Before select");
-
-        select_result = select(1, &read_fds, NULL, NULL, NULL);
-
-        LOG("After select");
-
-        fflush(stdout);
-        fgets(buffer, MAX_BUFFER - 1, stdin);
-        LOG(buffer);
-        if(strcmp(buffer, "q\n") == 0) {
-            printf("Exiting...\n");
-            break;
-        }
-
-        // buffer = readRequest
-        int  status;
-        char request[MAX_BUFFER];
-        char method[MAX_BUFFER];
-        char protocol[MAX_BUFFER];
-        char URI[MAX_BUFFER];
-        char reason[MAX_BUFFER];
-        char contents[MAX_BUFFER];
-
-        strcpy(request, buffer);
-        http_method(method, request);
-        http_protocol(protocol, request);
-        http_URI(URI, request);
-
-        printf("method: %s -> %d\n", method,   strcmp(method,   "GET"));
-        printf("method: %s -> %d\n", protocol, strcmp(protocol, "GTTP/1.0"));
-
-        if(
-            strcmp(method,   "GET"     ) != 0 ||
-            strcmp(protocol, "HTTP/1.0") != 0
-        ) {
-            status = 400;
-            strcpy(reason, "BAD REQUEST");
-            http_response(buffer, status, reason, "");
-        } else if(
-            !in_directory(URI) || !read_file(contents, MAX_BUFFER, URI)
-        ) {
-            status = 404;
-            strcpy(reason, "NOT FOUND");
-            http_response(buffer, status, reason, "");
-        } else {
-            status = 200;
-            strcpy(reason, "OK");
-            printf("\n%s\n", contents);
-
-            // Respond with file contents
-        }
-        // Log request
-        print_request(
-            "127.0.0.1",
-            CNFG_port,
-            method,
-            protocol,
-            status,
-            reason,
-            URI
-        );
-    }
-    close(CNFG_sock);
-    return;
-}
-*/
 
 int set_port(const char* arg) {
     port = (int) strtol(arg, (char**) NULL, 10);
@@ -247,6 +168,7 @@ int start() {
     FD_SET(sock,         &read_fds);
 
     while(1) {
+        handle_request();
         if(select(1, &read_fds, NULL, NULL, NULL) < 0) {
             print_select_error();
             break;
