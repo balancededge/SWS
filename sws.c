@@ -168,8 +168,9 @@ int start() {
     FD_SET(sock,         &read_fds);
 
     while(1) {
-        handle_user();
-        handle_request();
+        if(!handle_user() || !handle_request()) {
+            break;
+        }
         /*
         if(select(1, &read_fds, NULL, NULL, NULL) < 0) {
             print_select_error();
