@@ -573,7 +573,6 @@ int TEST_test() {
     test_HTTP_method();
     test_HTTP_URI();
     test_HTTP_protocol();
-    test_HTTP_version();
     test_HTTP_response();
     test_FILE_is_file();
     test_FILE_is_directory();
