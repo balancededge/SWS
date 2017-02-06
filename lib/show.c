@@ -27,7 +27,7 @@ int print_usage() {
 }
 
 int print_help() {
-    pritn_usage();
+    print_usage();
     printf("Option:\n"
            "  -h  --help  Show usage and options\n"
            "  -t  --test  Run tests\n");
