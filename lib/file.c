@@ -1,7 +1,9 @@
 #include <sys/types.h>
+#include <sys/types.h>
 #include <sys/stat.h>
-#include <stdio.h>
 #include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "file.h"
 
 char SERVING_PATH[MAX_PATH + 1];
