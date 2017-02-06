@@ -160,14 +160,16 @@ int set_address() {
 int start() {
 
     fd_set file_descriptors;
-    // Clear fd
-    FD_ZERO(&file_descriptors);
-    // Listen to stdin
-    FD_SET(STDIN_FILENO, &file_descriptors);
-    // Listen to socket
-    FD_SET(sock,         &file_descriptors);
 
     while(1) {
+
+        // Clear fd
+        FD_ZERO(&file_descriptors);
+        // Listen to stdin
+        FD_SET(STDIN_FILENO, &file_descriptors);
+        // Listen to socket
+        FD_SET(sock,         &file_descriptors);
+
         if(select(sock + 1, &file_descriptors, NULL, NULL, NULL) < 0) {
             print_select_error();
             break;
@@ -242,6 +244,9 @@ int handle_request() {
         read_file(objects, MAX_BUFFER, uri);
     }
 
+    // Build response
+    http_response(response, status, http_reason(reason, status), objects);
+
     // Log request
     print_request(
         "127.0.0.1",
@@ -252,9 +257,6 @@ int handle_request() {
         reason,
         uri
     );
-
-    // Build response
-    http_response(response, status, http_reason(reason, status), objects);
 
     // Send response
 
