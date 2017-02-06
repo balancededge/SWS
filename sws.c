@@ -275,11 +275,13 @@ int handle_request() {
     // To be replaced with recieve from
     int status;
 
-    char reason[MAX_BUFFER];
-    char method[MAX_BUFFER];
+    char reason  [MAX_BUFFER];
+    char method  [MAX_BUFFER];
     char protocol[MAX_BUFFER];
-    char uri[MAX_BUFFER];
-    char request[MAX_BUFFER];
+    char uri     [MAX_BUFFER];
+    char request [MAX_BUFFER];
+    char response[MAX_BUFFER];
+    char objects [MAX_BUFFER];
 
     fgets(request, MAX_BUFFER - 1, stdin);
 
@@ -289,15 +291,17 @@ int handle_request() {
         strcmp(http_protocol(protocol, request), "HTTP/1.0") != 0
     ) {
         status = 400;
+        strcpy(objects, "");
 
     // Handle NOT FOUND
     } else if(!in_directory(http_URI(uri, request))) {
         status = 404;
+        strcpy(objects, "");
 
     // Handle OK
     } else {
         status = 200;
-
+        read_file(objects, MAX_BUFFER, uri);
     }
 
     // Log request
@@ -307,9 +311,13 @@ int handle_request() {
         method,
         protocol,
         status,
-        http_reason(reason, status),
+        reason,
         uri
     );
+
+    // Build response
+    http_response(response, status, http_reason(reason, status), objects);
+    LOG(response);
 
     return 1;
 }
