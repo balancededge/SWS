@@ -307,7 +307,7 @@ int handle_request() {
         protocol,
         status,
         http_reason(reason, status),
-        URI
+        uri
     );
 
     return 1;
