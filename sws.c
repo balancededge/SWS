@@ -209,7 +209,7 @@ int handle_request() {
     char protocol[MAX_BUFFER]; *protocol = 0;
     char uri     [MAX_BUFFER]; *uri      = 0;
     char request [MAX_BUFFER]; *request  = 0;
-    char response[MAX_BUFFER]; *response = 9;
+    char response[MAX_BUFFER]; *response = 0;
     char objects [MAX_BUFFER]; *objects  = 0;
 
     char* client_IP;
@@ -284,6 +284,8 @@ int handle_request() {
         print_send_error();
         return 0;
     }
+
+    LOG(request);
 
     // Log request
     print_request(
