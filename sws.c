@@ -204,13 +204,13 @@ int handle_request() {
     int status;
     int send_size;
     ssize_t rec_size;
-    char reason  [MAX_BUFFER];
-    char method  [MAX_BUFFER];
-    char protocol[MAX_BUFFER];
-    char uri     [MAX_BUFFER];
-    char request [MAX_BUFFER];
-    char response[MAX_BUFFER];
-    char objects [MAX_BUFFER];
+    char reason  [MAX_BUFFER]; *reason   = 0;
+    char method  [MAX_BUFFER]; *method   = 0;
+    char protocol[MAX_BUFFER]; *protocol = 0
+    char uri     [MAX_BUFFER]; *uri      = 0;
+    char request [MAX_BUFFER]; *request  = 0;
+    char response[MAX_BUFFER]; *response = 9;
+    char objects [MAX_BUFFER]; *object   = 0;
 
     char* client_IP;
     struct hostent* client_properties;
@@ -250,8 +250,9 @@ int handle_request() {
 
     // Handle BAD REQUEST
     if(
-        strcmp(http_method(method, request), "GET") != 0 ||
-        strcmp(http_protocol(protocol, request), "HTTP/1.0") != 0
+        strcmp(http_method(method, request), "GET")          != 0 ||
+        strcmp(http_protocol(protocol, request), "HTTP/1.0") != 0 ||
+        strncmp(http_URI(uri, request, 1), "/")              != 0
     ) {
         status = 400;
         strcpy(objects, "");
