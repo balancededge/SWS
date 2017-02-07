@@ -231,7 +231,7 @@ int handle_request() {
 
     // Get Client Info
     client_properties = gethostbyaddr(
-        (co`nst char*) &client_address.sin_addr.s_addr,
+        (const char*) &client_address.sin_addr.s_addr,
         sizeof(client_address.sin_addr.s_addr),
         AF_INET
     );
@@ -270,8 +270,8 @@ int handle_request() {
     // Send response
     send_size = sendto(
         sock,
-        buffer,
-        strlen(buffer),
+        response,
+        strlen(response),
         0,
         (struct sockaddr *) &client_address,
         client_sock_length

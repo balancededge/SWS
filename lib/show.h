@@ -7,6 +7,10 @@ int print_title(char* version);
 int print_usage();
 int print_help();
 int print_running(const int port, const char* path);
+int print_recieve_error();
+int print_client_property_error();
+int print_client_resolve_error();
+int print_send_error();
 int print_request(
     const char* IP,
     const int port,
