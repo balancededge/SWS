@@ -59,7 +59,6 @@ struct sockaddr_in server_address;
 socklen_t          server_sock_length;
 struct sockaddr_in client_address;
 socklen_t          client_sock_length;
-struct hostent*    client_properties;
 //============================================================================//
 // PROGRAM MAIN
 //============================================================================//
@@ -203,7 +202,6 @@ int handle_request() {
     int status;
     int send_size;
     ssize_t rec_size;
-    char* client_IP;
     char reason  [MAX_BUFFER];
     char method  [MAX_BUFFER];
     char protocol[MAX_BUFFER];
@@ -211,6 +209,9 @@ int handle_request() {
     char request [MAX_BUFFER];
     char response[MAX_BUFFER];
     char objects [MAX_BUFFER];
+
+    char* client_IP;
+    struct hostent* client_properties;
 
     // Recieve request
     rec_size = recvfrom(
@@ -230,7 +231,7 @@ int handle_request() {
     }
 
     // Get Client Info
-    client_properties = gethostbyaddr(
+    client_properties = (struct hostent*) gethostbyaddr(
         (const char*) &client_address.sin_addr.s_addr,
         sizeof(client_address.sin_addr.s_addr),
         AF_INET
@@ -239,7 +240,7 @@ int handle_request() {
         print_client_property_error();
         return 0;
     }
-    client_IP = inet_ntoa(client_address.sin_addr);
+    client_IP = (char*) inet_ntoa(client_address.sin_addr);
     if (client_IP == NULL) {
         print_client_resolve_error();
         return 0;
