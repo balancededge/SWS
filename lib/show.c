@@ -50,6 +50,21 @@ int print_recieve_error() {
     return EXIT_SUCCESS;
 }
 
+int print_client_property_error() {
+    printf("Error: cannot obtain client properties\n");
+    return EXIT_SUCCESS;
+}
+
+int print_client_resolve_error() {
+    printf("Error: cannot resolve client IP\n");
+    return EXIT_SUCCESS;
+}
+
+int print_send_error() {
+    printf("Error: cannot send client response\n");
+    return EXIT_SUCCESS;
+}
+
 int print_request(
     const char* IP,
     const int port,

@@ -44,7 +44,7 @@
 
 int set_port(const char* arg);
 int set_socket();
-int set_address();
+int set_server_address();
 int start();
 int handle_user();
 int handle_request();
@@ -55,10 +55,11 @@ int handle_request();
 
 int                port;
 int                sock;
-struct sockaddr_in address;
-ssize_t            recsize;
-socklen_t          sock_length;
-
+struct sockaddr_in server_address;
+socklen_t          server_sock_length;
+struct sockaddr_in client_address;
+socklen_t          client_sock_length;
+struct hostent*    client_properties;
 //============================================================================//
 // PROGRAM MAIN
 //============================================================================//
@@ -91,8 +92,8 @@ int main(const int argc, char* argv[]) {
         return EXIT_FAILURE;
     }
 
-    // Configure socket and address
-    if(!set_socket() || !set_address()) {
+    // Configure socket and server_address
+    if(!set_socket() || !set_server_address()) {
         return EXIT_FAILURE;
     }
 
@@ -138,18 +139,19 @@ int set_socket() {
     return  1;
 }
 
-int set_address() {
+int set_server_address() {
     // Clear space
-    memset(&address, 0, sizeof address);
+    memset(&server_address, 0, sizeof server_address);
 
-    // build address
-    address.sin_family      = AF_INET;
-    address.sin_addr.s_addr = htonl(INADDR_ANY);
-    address.sin_port        = htons(port);
-    sock_length             = sizeof(address);
+    // build server_address
+    server_address.sin_family      = AF_INET;
+    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_address.sin_port        = htons(port);
+    server_sock_length             = sizeof(server_address);
+    client_sock_length             = sizeof(client_address);
 
     // Try and bind
-    if(bind(sock, (struct sockaddr *) &address, sock_length) < 0) {
+    if(bind(sock, (struct sockaddr *) &server_address, server_sock_length) < 0) {
         printf("Failed to bind on %d:%d.", INADDR_ANY, port);
         close(sock);
         return 0;
@@ -199,7 +201,9 @@ int handle_request() {
 
     // To be replaced with recieve from
     int status;
-
+    int send_size;
+    ssize_t rec_size;
+    char* client_IP;
     char reason  [MAX_BUFFER];
     char method  [MAX_BUFFER];
     char protocol[MAX_BUFFER];
@@ -208,21 +212,37 @@ int handle_request() {
     char response[MAX_BUFFER];
     char objects [MAX_BUFFER];
 
-    ssize_t rec_size = recvfrom(
+    // Recieve request
+    rec_size = recvfrom(
         sock,
         (void*) request,
         sizeof request,
         0,
-        (struct sockaddr*) &address,
-        &sock_length
+        (struct sockaddr*) &client_address,
+        &client_sock_length
     );
-
     if(rec_size < 0) {
         print_recieve_error();
         return 0;
     }
     if(strlen(request) <= 0) {
         return 1;
+    }
+
+    // Get Client Info
+    client_properties = gethostbyaddr(
+        (co`nst char*) &client_address.sin_addr.s_addr,
+        sizeof(client_address.sin_addr.s_addr),
+        AF_INET
+    );
+    if(client_properties == NULL) {
+        print_client_property_error();
+        return 0;
+    }
+    client_IP = inet_ntoa(client_address.sin_addr);
+    if (client_IP == NULL) {
+        print_client_resolve_error();
+        return 0;
     }
 
     // Handle BAD REQUEST
@@ -248,7 +268,18 @@ int handle_request() {
     http_response(response, status, http_reason(reason, status), objects);
 
     // Send response
-    LOG(response);
+    send_size = sendto(
+        sock,
+        buffer,
+        strlen(buffer),
+        0,
+        (struct sockaddr *) &client_address,
+        client_sock_length
+    );
+    if(send_size < 0) {
+        print_send_error();
+        return 0;
+    }
 
     // Log request
     print_request(
