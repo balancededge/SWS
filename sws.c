@@ -190,7 +190,6 @@ int handle_user() {
     char buffer[MAX_BUFFER];
     fgets(buffer, MAX_BUFFER - 1, stdin);
     util_no_whitespace(buffer);
-    LOG("HI");
     if(strcmp(buffer, "q") == 0) {
         printf("Exiting...\n");
         return 0;
