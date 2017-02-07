@@ -206,11 +206,11 @@ int handle_request() {
     ssize_t rec_size;
     char reason  [MAX_BUFFER]; *reason   = 0;
     char method  [MAX_BUFFER]; *method   = 0;
-    char protocol[MAX_BUFFER]; *protocol = 0
+    char protocol[MAX_BUFFER]; *protocol = 0;
     char uri     [MAX_BUFFER]; *uri      = 0;
     char request [MAX_BUFFER]; *request  = 0;
     char response[MAX_BUFFER]; *response = 9;
-    char objects [MAX_BUFFER]; *object   = 0;
+    char objects [MAX_BUFFER]; *objects  = 0;
 
     char* client_IP;
     struct hostent* client_properties;
