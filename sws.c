@@ -34,6 +34,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netdb.h>
 #include "lib/http.h"
 #include "lib/file.h"
 #include "lib/show.h"
