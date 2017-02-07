@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include "lib/http.h"
 #include "lib/file.h"
 #include "lib/show.h"
@@ -231,7 +232,7 @@ int handle_request() {
     }
 
     // Get Client Info
-    client_properties = (struct hostent*) gethostbyaddr(
+    client_properties = gethostbyaddr(
         (const char*) &client_address.sin_addr.s_addr,
         sizeof(client_address.sin_addr.s_addr),
         AF_INET
@@ -240,7 +241,7 @@ int handle_request() {
         print_client_property_error();
         return 0;
     }
-    client_IP = (char*) inet_ntoa(client_address.sin_addr);
+    client_IP = inet_ntoa(client_address.sin_addr);
     if (client_IP == NULL) {
         print_client_resolve_error();
         return 0;
