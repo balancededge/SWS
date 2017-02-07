@@ -83,7 +83,7 @@ int print_request(
     //Sep 12 12:00:00
     strftime(buffer, 26, "%b %d %H:%M:%S", tm_info);
     // time IP:Port method / protocol/version; http/1.0 status reason; URI
-    printf("%s %s:%d %s / %s; http/1.0 %d %s; %s\n",
+    printf("%s %s:%d %s / %s; HTTP/1.0 %d %s; %s\n",
         buffer,
         IP,
         port,
