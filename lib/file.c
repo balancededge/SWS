@@ -80,8 +80,6 @@ int in_directory(const char* path) {
  */
 char* read_file(const char* path) {
 
-    LOG("HERE");
-
     long file_size;
     char full[MAX_PATH + 1];
     char* buffer;

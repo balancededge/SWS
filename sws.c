@@ -273,6 +273,7 @@ int handle_request() {
 
     // Handle OK
     } else {
+        LOG("OK");
         status = 200;
         objects = read_file(uri);
     }
