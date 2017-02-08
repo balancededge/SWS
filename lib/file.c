@@ -97,6 +97,9 @@ int read_file(char* buffer, const int n, const char* path) {
             : n - 1,
             file
         );
+        buffer[n - 1 > file_size
+            ? file_size
+            : n - 1] = 0;
     } else {
         fclose(file);
         return 0;
