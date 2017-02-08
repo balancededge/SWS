@@ -90,14 +90,10 @@ char* read_file(const char* path) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
         buffer = malloc(sizeof(char) * (file_size + 1));
-        LOG("Allocated");
         fseek(file, 0, SEEK_SET);
-        LOG("Seeked");
         buffer[0] = 0;
         fread(buffer, 1, file_size, file);
-        LOG("READ");
         buffer[file_size] = 0;
-        LOG(buffer);
     } else {
         fclose(file);
         return buffer;

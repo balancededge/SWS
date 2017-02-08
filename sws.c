@@ -258,10 +258,6 @@ int handle_request() {
         return 0;
     }
 
-    LOG(http_method(method, request));
-    LOG(http_protocol(protocol, request));
-    LOG(http_URI(uri, request));
-
     // Handle BAD REQUEST
     if(
         strcmp(http_method(method, request), "GET")          != 0 ||
