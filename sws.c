@@ -287,6 +287,7 @@ int handle_request() {
     //for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
         LOG("HERE");
         LOG(response);
+        LOG("THEN HERE");
 
         send_size = sendto(
             sock,
