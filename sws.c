@@ -274,12 +274,14 @@ int handle_request() {
 
     // Handle OK
     } else {
+        LOG("Ok");
         status = 200;
         read_file(objects, MAX_BUFFER, uri);
     }
-
+    LOG("Read file");
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
+    LOG("Built response")
 
     resp_size = strlen(response);
 
