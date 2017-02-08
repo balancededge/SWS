@@ -18,6 +18,6 @@ char* util_no_whitespace(char* buffer) {
 
 int util_endswith(char* source, char* postfix) {
     return strlen(source) > strlen(postfix)
-        ? strcmp(source + strlen(source) - strlen(postfix), postfix) == 0
+        ? (strcmp(source + strlen(source) - strlen(postfix), postfix) == 0)
         : 0;
 }

@@ -211,6 +211,7 @@ int handle_request() {
     char response[MAX_BUFFER]; *response = 0;
     char objects [MAX_BUFFER]; *objects  = 0;
 
+    int client_port;
     char* client_IP;
 
     // Recieve request
@@ -232,8 +233,9 @@ int handle_request() {
 
 
     // Get Client IP
-    client_IP = inet_ntoa(client_address.sin_addr);
-    if (client_IP == NULL) {
+    client_IP   = inet_ntoa(client_address.sin_addr);
+    client_port = ntohs(client.sin_port);
+    if (client_IP == NULL || client_port == NULL) {
         print_client_resolve_error();
         return 0;
     }
@@ -278,7 +280,7 @@ int handle_request() {
     // Log request
     print_request(
         client_IP,
-        port,
+        client_port,
         method,
         protocol,
         status,
