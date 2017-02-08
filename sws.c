@@ -269,12 +269,12 @@ int handle_request() {
         strncmp(http_URI(uri, request), "/", 1)              != 0 //||
         //!util_endswith(request, "\r\n\r\n")
     ) {
-        status = 400;
+        status  = 400;
         objects = empty;
 
     // Handle NOT FOUND
     } else if(!in_directory(http_URI(uri, request))) {
-        status = 404;
+        status  = 404;
         objects = empty;
 
     // Handle OK
@@ -288,18 +288,14 @@ int handle_request() {
     resp_size = strlen(response);
 
     // Send response
-    sent = 0;
-    //for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
-        LOG(response);
+    for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
 
         send_size = sendto(
             sock,
-            response// + sent
-            ,
-            strlen(response) - 1// - 1 > MAX_RESPONSE_SIZE
-                //? MAX_RESPONSE_SIZE
-                //: strlen(response) - 1
-                ,
+            response + sent,
+            strlen(response) - 1 > MAX_RESPONSE_SIZE
+                ? MAX_RESPONSE_SIZE
+                : strlen(response) - 1,
             0,
             (struct sockaddr *) &client_address,
             client_sock_length
@@ -308,10 +304,11 @@ int handle_request() {
             print_send_error();
             return 0;
         }
-    //}
 
     // Free resources
-    free(objects);
+    if(objects != empty) {
+        free(objects);
+    }
     free(response);
 
     // Log request
