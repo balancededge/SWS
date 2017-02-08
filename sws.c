@@ -284,6 +284,8 @@ int handle_request() {
 
     resp_size = strlen(response);
 
+    LOG("SIZE SERIOUSLY?");
+
     // Send response
     sent = 0;
     //for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
