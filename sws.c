@@ -301,7 +301,6 @@ int handle_request() {
             return 0;
         }
     }
-    free(response);
 
     // Log request
     print_request(
