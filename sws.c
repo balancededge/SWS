@@ -212,7 +212,6 @@ int handle_request() {
     char objects [MAX_BUFFER]; *objects  = 0;
 
     char* client_IP;
-    struct hostent* client_properties;
 
     // Recieve request
     rec_size = recvfrom(
@@ -231,16 +230,8 @@ int handle_request() {
         return 1;
     }
 
-    // Get Client Info
-    client_properties = gethostbyaddr(
-        (const char*) &client_address.sin_addr.s_addr,
-        sizeof(client_address.sin_addr.s_addr),
-        AF_INET
-    );
-    if(client_properties == NULL) {
-        print_client_property_error();
-        return 0;
-    }
+
+    // Get Client IP
     client_IP = inet_ntoa(client_address.sin_addr);
     if (client_IP == NULL) {
         print_client_resolve_error();
