@@ -281,7 +281,7 @@ int handle_request() {
     LOG("Read file");
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
-    LOG("Built response")
+    LOG("Built response");
 
     resp_size = strlen(response);
 
