@@ -72,7 +72,7 @@ char* http_URI(char* buffer, const char* request) {
  * @param   const char* request request string
  * @return  char*       buffer
  */
-char* http_protocol(const char*request) {
+char* http_protocol(char* buffer, const char*request) {
     return http_parse_block(buffer, request, 3);
 }
 /**
@@ -82,8 +82,7 @@ char* http_protocol(const char*request) {
  * @param   const char* reason  Status reason message
  * @param   const char* objects Any hTML objects to attach to the response
  */
-char* http_response(
-    char* pointer,
+char* http_response(,
     const int status,
     const char* reason,
     const char* objects
