@@ -5,7 +5,7 @@
 
 #define MAX_URL 2000
 
-char* buffer = NULL;
+char* response_buffer = NULL;
 
 /**
  * Divides a request string into blocks based off whitespace. The requested
@@ -89,12 +89,12 @@ char* http_response(
     const char* reason,
     const char* objects
 ) {
-    if(buffer != NULL) {
-        free(buffer);
+    if(response_buffer != NULL) {
+        free(response_buffer);
     }
-    buffer = (char*) malloc(sizeof(char) * (strlen(objects) + MAX_URL));
-    sprintf(buffer, "HTTP/1.0 %d %s\r\n%s\r\n\r\n", status, reason, objects);
-    return buffer;
+    response_buffer = (char*) malloc(sizeof(char) * (strlen(objects) + MAX_URL));
+    sprintf(response_buffer, "HTTP/1.0 %d %s\r\n%s\r\n\r\n", status, reason, objects);
+    return response_buffer;
 }
 /**
  *
