@@ -280,14 +280,14 @@ int handle_request() {
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
 
+    LOG("HERE");
+
     resp_size = strlen(response);
 
     // Send response
     sent = 0;
     //for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
-        LOG("HERE");
         LOG(response);
-        LOG("THEN HERE");
 
         send_size = sendto(
             sock,
