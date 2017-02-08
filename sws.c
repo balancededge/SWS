@@ -258,12 +258,16 @@ int handle_request() {
         return 0;
     }
 
+    LOG(http_method(method, request));
+    LOG(http_protocol(protocol, request));
+    LOG(http_URI(uri, request));
+
     // Handle BAD REQUEST
     if(
         strcmp(http_method(method, request), "GET")          != 0 ||
         strcmp(http_protocol(protocol, request), "HTTP/1.0") != 0 ||
         strncmp(http_URI(uri, request), "/", 1)              != 0 ||
-        !util_endswith(request, "\r\n\r\n")
+        //!util_endswith(request, "\r\n\r\n")
     ) {
         status = 400;
         objects = empty;
