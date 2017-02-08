@@ -82,7 +82,7 @@ char* http_protocol(char* buffer, const char*request) {
  * @param   const char* reason  Status reason message
  * @param   const char* objects Any hTML objects to attach to the response
  */
-char* http_response(,
+char* http_response(
     const int status,
     const char* reason,
     const char* objects
