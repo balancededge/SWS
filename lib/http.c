@@ -89,7 +89,7 @@ char* http_response(
     const char* reason,
     const char* objects
 ) {
-    sprintf(buffer, "HTTP/1.0 %d %s\r\n%s", status, reason, objects);
+    sprintf(buffer, "HTTP/1.0 %d %s\r\n%s\r\n\r\n", status, reason, objects);
     return buffer;
 }
 /**
