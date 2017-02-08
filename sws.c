@@ -288,7 +288,7 @@ int handle_request() {
         send_size = sendto(
             sock,
             response + sent,
-            strlen(response)// - 1 > MAX_RESPONSE_SIZE
+            strlen(response) - 1// - 1 > MAX_RESPONSE_SIZE
                 //? MAX_RESPONSE_SIZE
                 //: strlen(response) - 1,
             0,
