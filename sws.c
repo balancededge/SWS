@@ -283,12 +283,9 @@ int handle_request() {
         print_send_error();
         return 0;
     }
-
-    LOG(request);
-
     // Log request
     print_request(
-        "127.0.0.1",
+        client_IP,
         port,
         method,
         protocol,
