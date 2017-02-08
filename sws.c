@@ -224,12 +224,11 @@ int handle_request() {
     char protocol[MAX_BUFFER]; *protocol = 0;
     char uri     [MAX_BUFFER]; *uri      = 0;
     char request [MAX_BUFFER]; *request  = 0;
-    char objects [MAX_BUFFER]; *objects  = 0;
 
     int client_port;
     char* client_IP;
     char* response;
-    char* object;
+    char* objects;
 
     // Recieve request
     rec_size = recvfrom(
