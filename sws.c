@@ -229,6 +229,7 @@ int handle_request() {
     int client_port;
     char* client_IP;
     char* response;
+    char* object;
 
     // Recieve request
     rec_size = recvfrom(
@@ -280,11 +281,7 @@ int handle_request() {
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
 
-    LOG("HERE");
-
     resp_size = strlen(response);
-
-
 
     // Send response
 
@@ -307,6 +304,7 @@ int handle_request() {
     }
 
     // Free resources
+    free(object);
     free(response);
 
     // Log request
