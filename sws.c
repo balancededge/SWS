@@ -275,8 +275,6 @@ int handle_request() {
     } else {
         status = 200;
         objects = read_file(uri);
-
-        LOG(objects);
     }
     // Build response
     response = http_response(status, http_reason(reason, status), objects);

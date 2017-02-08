@@ -7,6 +7,7 @@
 #include <string.h>
 #include "file.h"
 
+#define LOG(_x)  printf("%s\n", _x); fflush(stdout)
 #define MAX_PATH 4096
 
 char SERVING_PATH[MAX_PATH + 1];
@@ -88,11 +89,16 @@ char* read_file(const char* path) {
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
+        LOG(file_size);
         buffer = malloc(sizeof(char) * (file_size + 1));
+        LOG("Allocated")
         fseek(file, 0, SEEK_SET);
+        LOG("Seeked")
         buffer[0] = 0;
         fread(buffer, 1, file_size, file);
+        LOG("READ");
         buffer[file_size] = 0;
+        LOG(buffer);
     } else {
         fclose(file);
         return buffer;
