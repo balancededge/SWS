@@ -278,20 +278,17 @@ int handle_request() {
         status = 200;
         read_file(objects, MAX_BUFFER, uri);
     }
-    LOG("Read file");
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
-    LOG("Built response");
 
     resp_size = strlen(response);
 
     // Send response
-
     for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
 
         send_size = sendto(
             sock,
-            response += sent,
+            response + sent,
             strlen(response) > MAX_RESPONSE_SIZE
                 ? MAX_RESPONSE_SIZE
                 : strlen(response),
