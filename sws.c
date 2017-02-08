@@ -285,7 +285,7 @@ int handle_request() {
     // Send response
     sent = 0;
     //for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
-
+        LOG("HERE");
         LOG(response);
 
         send_size = sendto(
