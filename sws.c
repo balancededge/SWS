@@ -230,6 +230,8 @@ int handle_request() {
     char* response;
     char* objects;
 
+    char* empty = "";
+
     // Recieve request
     rec_size = recvfrom(
         sock,
@@ -264,16 +266,15 @@ int handle_request() {
         !util_endswith(request, "\r\n\r\n")
     ) {
         status = 400;
-        strcpy(objects, "");
+        objects = empty;
 
     // Handle NOT FOUND
     } else if(!in_directory(http_URI(uri, request))) {
         status = 404;
-        strcpy(objects, "");
+        objects = empty;
 
     // Handle OK
     } else {
-        LOG("OK");
         status = 200;
         objects = read_file(uri);
     }
