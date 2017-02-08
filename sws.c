@@ -280,9 +280,11 @@ int handle_request() {
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
 
+    LOG("HERE");
+
     resp_size = strlen(response);
 
-    LOG("HERE");
+
 
     // Send response
 
