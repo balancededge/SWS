@@ -266,7 +266,7 @@ int handle_request() {
     if(
         strcmp(http_method(method, request), "GET")          != 0 ||
         strcmp(http_protocol(protocol, request), "HTTP/1.0") != 0 ||
-        strncmp(http_URI(uri, request), "/", 1)              != 0 ||
+        strncmp(http_URI(uri, request), "/", 1)              != 0 //||
         //!util_endswith(request, "\r\n\r\n")
     ) {
         status = 400;
