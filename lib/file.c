@@ -100,7 +100,5 @@ int read_file(char* pointer, const int n, const char* path) {
         return 0;
     }
     fclose(file);
-    printf("HERE");
-        fflush(stdout);
     return 1;
 }
