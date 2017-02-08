@@ -284,9 +284,6 @@ int handle_request() {
 
     // Send response
     for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
-
-        LOG()
-
         send_size = sendto(
             sock,
             response + sent,
