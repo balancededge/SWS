@@ -84,14 +84,16 @@ int read_file(char* pointer, const int n, const char* path) {
     char full[MAX_PATH + 1];
     full_path(full, path);
 
+
+
     FILE* file = fopen(full, "rb");
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
         pointer = (char*) malloc(file_size);
         fseek(file, 0, SEEK_SET);
-        fread(pointer, file_size);
-        pointer[file_size] = 0;
+        fread(buffer, file_size, file);
+        buffer[n - 1 > file_size ? file_size : n - 1] = 0;
     } else {
         fclose(file);
         return 0;
