@@ -305,7 +305,7 @@ int handle_request() {
     //}
 
     // Free resources
-    free(object);
+    free(objects);
     free(response);
 
     // Log request
