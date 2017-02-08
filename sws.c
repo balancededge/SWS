@@ -285,9 +285,12 @@ int handle_request() {
     // Send response
     sent = 0;
     //for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
+
+        LOG(response);
+
         send_size = sendto(
             sock,
-            response + sent,
+            response/* + sent */,
             strlen(response) - 1// - 1 > MAX_RESPONSE_SIZE
                 //? MAX_RESPONSE_SIZE
                 //: strlen(response) - 1,
