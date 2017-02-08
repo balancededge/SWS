@@ -290,10 +290,12 @@ int handle_request() {
 
         send_size = sendto(
             sock,
-            response/* + sent */,
+            response// + sent
+            ,
             strlen(response) - 1// - 1 > MAX_RESPONSE_SIZE
                 //? MAX_RESPONSE_SIZE
-                //: strlen(response) - 1,
+                //: strlen(response) - 1
+                ,
             0,
             (struct sockaddr *) &client_address,
             client_sock_length
