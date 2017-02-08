@@ -90,7 +90,7 @@ int read_file(char* pointer, const int n, const char* path) {
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
-        pointer = (char*) malloc(file_size + 1);
+        pointer = (char*) malloc(sizeof(char) * file_size + 1);
         fseek(file, 0, SEEK_SET);
         fread(pointer, 1, file_size, file);
         pointer[file_size] = 0;
