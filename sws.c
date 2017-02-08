@@ -275,16 +275,12 @@ int handle_request() {
     // Handle OK
     } else {
         status = 200;
-        read_file(objects, MAX_BUFFER, uri);
+        objects = read_file(objects, MAX_BUFFER, uri);
     }
     // Build response
-    http_response(response, status, http_reason(reason, status), objects);
-
-    LOG("HERE");
+    response = http_response(response, status, http_reason(reason, status), objects);
 
     resp_size = strlen(response);
-
-    LOG("SIZE SERIOUSLY?");
 
     // Send response
     sent = 0;

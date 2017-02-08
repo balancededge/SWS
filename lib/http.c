@@ -72,13 +72,12 @@ char* http_URI(char* buffer, const char* request) {
  * @param   const char* request request string
  * @return  char*       buffer
  */
-char* http_protocol(char* buffer, const char*request) {
+char* http_protocol(const char*request) {
     return http_parse_block(buffer, request, 3);
 }
 /**
  * Formats an http response and places it into the provided BUFFER.
  *
- * @param   char*       pointer pointer to allocated string
  * @param   const int   status  http response status (200, 400, 404)
  * @param   const char* reason  Status reason message
  * @param   const char* objects Any hTML objects to attach to the response
@@ -89,9 +88,9 @@ char* http_response(
     const char* reason,
     const char* objects
 ) {
-    pointer = (char*) malloc(sizeof(char) * (strlen(objects) + MAX_URL));
-    sprintf(pointer, "HTTP/1.0 %d %s\r\n%s\r\n\r\n", status, reason, objects);
-    return pointer;
+    char* buffer = (char*) malloc(sizeof(char) * (strlen(objects) + MAX_URL));
+    sprintf(buffer, "HTTP/1.0 %d %s\r\n%s\r\n\r\n", status, reason, objects);
+    return buffer;
 }
 /**
  *
