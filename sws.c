@@ -235,7 +235,7 @@ int handle_request() {
     // Get Client IP
     client_IP   = inet_ntoa(client_address.sin_addr);
     client_port = ntohs(client_address.sin_port);
-    if (client_IP == NULL || client_port == NULL) {
+    if (client_IP == NULL || client_port < 0) {
         print_client_resolve_error();
         return 0;
     }
