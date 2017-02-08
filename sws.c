@@ -304,6 +304,7 @@ int handle_request() {
             print_send_error();
             return 0;
         }
+    }
 
     // Free resources
     if(objects != empty) {
