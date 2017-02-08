@@ -15,10 +15,11 @@
 // DEFINES
 // ===========================================================================//
 
-#define TODO       printf("TODO line: %d", __LINE__)
-#define MAX_BUFFER 2000
-#define LOG(_x)    printf("%s\n", _x); fflush(stdout)
-#define VERSION    "0.0.2"
+#define TODO              printf("TODO line: %d", __LINE__)
+#define MAX_BUFFER        2048
+#define MAX_RESPONSE_SIZE 1024
+#define LOG(_x)           printf("%s\n", _x); fflush(stdout)
+#define VERSION           "0.0.3"
 
 //============================================================================//
 // INCLUDES
@@ -104,7 +105,9 @@ int main(const int argc, char* argv[]) {
 
     return EXIT_SUCCESS;
 }
-
+/**
+ *
+ */
 int set_port(const char* arg) {
     port = (int) strtol(arg, (char**) NULL, 10);
     if(strcmp(arg, "0") == 0 || port != 0) {
@@ -117,7 +120,9 @@ int set_port(const char* arg) {
     );
     return 0;
 }
-
+/**
+ *
+ */
 int set_socket() {
     // Create socket
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -139,7 +144,9 @@ int set_socket() {
     );
     return  1;
 }
-
+/**
+ *
+ */
 int set_server_address() {
     // Clear space
     memset(&server_address, 0, sizeof server_address);
@@ -159,7 +166,9 @@ int set_server_address() {
     }
     return 1;
 }
-
+/**
+ *
+ */
 int start() {
 
     fd_set file_descriptors;
@@ -185,7 +194,9 @@ int start() {
         }
     }
 }
-
+/**
+ *
+ */
 int handle_user() {
     char buffer[MAX_BUFFER];
     fgets(buffer, MAX_BUFFER - 1, stdin);
@@ -196,23 +207,28 @@ int handle_user() {
     }
     return 1;
 }
-
+/**
+ *
+ */
 int handle_request() {
 
     // To be replaced with recieve from
+    int sent;
     int status;
     int send_size;
+    int resp_size;
     ssize_t rec_size;
+    char buffer  [MAX_RESPONSE_SIZE];
     char reason  [MAX_BUFFER]; *reason   = 0;
     char method  [MAX_BUFFER]; *method   = 0;
     char protocol[MAX_BUFFER]; *protocol = 0;
     char uri     [MAX_BUFFER]; *uri      = 0;
     char request [MAX_BUFFER]; *request  = 0;
-    char response[MAX_BUFFER]; *response = 0;
     char objects [MAX_BUFFER]; *objects  = 0;
 
     int client_port;
     char* client_IP;
+    char* response;
 
     // Recieve request
     rec_size = recvfrom(
@@ -264,19 +280,31 @@ int handle_request() {
     // Build response
     http_response(response, status, http_reason(reason, status), objects);
 
+    resp_size = strlen(response);
+
     // Send response
-    send_size = sendto(
-        sock,
-        response,
-        strlen(response),
-        0,
-        (struct sockaddr *) &client_address,
-        client_sock_length
-    );
-    if(send_size < 0) {
-        print_send_error();
-        return 0;
+
+    for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
+
+        send_size = sendto(
+            sock,
+            response += sent,
+            strlen(response) > MAX_RESPONSE_SIZE
+                ? MAX_RESPONSE_SIZE
+                : strlen(response),
+            0,
+            (struct sockaddr *) &client_address,
+            client_sock_length
+        );
+        if(send_size < 0) {
+            print_send_error();
+            return 0;
+        }
     }
+
+    // Free resources
+    free(response);
+
     // Log request
     print_request(
         client_IP,

@@ -73,29 +73,27 @@ int in_directory(const char* path) {
 /**
  * Reads the contents of a file into a buffer.
  *
- * @param   char*       buffer  write buffer
+ * @param   char*       pointer pointer to allocated string
  * @param   const int   n       buffer size
  * @param   const char* path    file path
  * @return  int                 success
  */
-int read_file(char* buffer, const int n, const char* path) {
+int read_file(char* pointer, const int n, const char* path) {
 
     long file_size;
     char full[MAX_PATH + 1];
     full_path(full, path);
 
+
+
     FILE* file = fopen(full, "rb");
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
+        pointer = (char*) malloc(file_size);
         fseek(file, 0, SEEK_SET);
-        fread(
-            buffer,
-            1,
-            n - 1 > file_size ? file_size : n - 1,
-            file
-        );
-        buffer[n - 1 > file_size ? file_size : n - 1] = 0;
+        fread(buffer, file_size);
+        buffer[file_size] = 0;
     } else {
         fclose(file);
         return 0;
