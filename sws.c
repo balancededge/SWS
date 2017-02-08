@@ -301,11 +301,6 @@ int handle_request() {
             return 0;
         }
     }
-
-    // Free resources
-    if(objects != empty) {
-        free(objects);
-    }
     free(response);
 
     // Log request

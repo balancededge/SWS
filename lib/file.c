@@ -7,9 +7,9 @@
 #include <string.h>
 #include "file.h"
 
-#define LOG(_x)  printf("%s\n", _x); fflush(stdout)
 #define MAX_PATH 4096
 
+char* buffer = NULL;
 char SERVING_PATH[MAX_PATH + 1];
 /**
  * Configure the directory that files will be served from.
@@ -82,14 +82,16 @@ char* read_file(const char* path) {
 
     long file_size;
     char full[MAX_PATH + 1];
-    char* buffer;
     full_path(full, path);
+    if(buffer != NULL) {
+        free(buffer);
+    }
 
     FILE* file = fopen(full, "rb");
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
-        buffer = malloc(sizeof(char) * (file_size + 1));
+        buffer = (char*) malloc(sizeof(char) * (file_size + 1));
         fseek(file, 0, SEEK_SET);
         buffer[0] = 0;
         fread(buffer, 1, file_size, file);
