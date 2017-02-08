@@ -92,8 +92,8 @@ int read_file(char* pointer, const int n, const char* path) {
         file_size = ftell(file);
         pointer = (char*) malloc(file_size);
         fseek(file, 0, SEEK_SET);
-        fread(pointer, file_size, file);
-        pointer[file_size] = 0;
+        fread(buffer, 1, file_size, file);
+        buffer[n - 1 > file_size ? file_size : n - 1] = 0;
     } else {
         fclose(file);
         return 0;
