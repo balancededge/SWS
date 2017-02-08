@@ -77,7 +77,7 @@ int in_directory(const char* path) {
  * @param   const char* path    file path
  * @return  int                 success
  */
-int read_file(const char* path) {
+char* read_file(const char* path) {
 
     long file_size;
     char full[MAX_PATH + 1];
