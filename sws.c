@@ -274,7 +274,6 @@ int handle_request() {
 
     // Handle OK
     } else {
-        LOG("Ok");
         status = 200;
         read_file(objects, MAX_BUFFER, uri);
     }
@@ -286,12 +285,14 @@ int handle_request() {
     // Send response
     for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
 
+        LOG()
+
         send_size = sendto(
             sock,
             response + sent,
-            strlen(response) > MAX_RESPONSE_SIZE
+            strlen(response) - 1 > MAX_RESPONSE_SIZE
                 ? MAX_RESPONSE_SIZE
-                : strlen(response),
+                : strlen(response) - 1,
             0,
             (struct sockaddr *) &client_address,
             client_sock_length
