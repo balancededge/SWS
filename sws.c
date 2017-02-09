@@ -84,7 +84,6 @@ int main(const int argc, char* argv[]) {
             return print_help();
         } else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0) {
             debug = 1;
-            break;
         } else {
             break;
         }
