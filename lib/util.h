@@ -4,6 +4,7 @@
 // Exports
 
 char* util_no_whitespace(char* buffer);
+void util_toupper(char* buffer);
 int util_endswith(char* source, char* postfix);
 
 #endif
