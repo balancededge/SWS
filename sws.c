@@ -19,6 +19,7 @@
 #define MAX_BUFFER        2048
 #define MAX_RESPONSE_SIZE 1024
 #define LOG(_x)           do{ if(debug) { printf("%s\n", _x); fflush(stdout); } }while(0)
+#define LOGF(_x, ...)     do{ if(debug) { printf(_x, __VA_ARGS__); fflush(stdout); } }while(0)
 #define VERSION           "0.0.3"
 
 //============================================================================//
@@ -310,7 +311,7 @@ int handle_request() {
     LOG(protocol);
 
     LOG("RESPONSE:");
-    LOG(status);
+    LOGF("%d", status);
 
     // Log request
     print_request(
