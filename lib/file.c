@@ -83,23 +83,24 @@ char* read_file(const char* path) {
     long file_size;
     char full[MAX_PATH + 1];
     full_path(full, path);
-    if(buffer != NULL) {
-        free(buffer);
+
+    if(file_buffer != NULL) {
+        free(file_buffer);
     }
 
     FILE* file = fopen(full, "rb");
     if(file) {
         fseek(file, 0, SEEK_END);
         file_size = ftell(file);
-        buffer = (char*) malloc(sizeof(char) * (file_size + 1));
+        file_buffer = (char*) malloc(sizeof(char) * (file_size + 1));
         fseek(file, 0, SEEK_SET);
-        buffer[0] = 0;
-        fread(buffer, 1, file_size, file);
-        buffer[file_size] = 0;
+        file_buffer[0] = 0;
+        fread(file_buffer, 1, file_size, file);
+        file_buffer[file_size] = 0;
     } else {
         fclose(file);
-        return buffer;
+        return file_buffer;
     }
     fclose(file);
-    return buffer;
+    return file_buffer;
 }
