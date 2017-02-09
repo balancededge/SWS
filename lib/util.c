@@ -26,6 +26,14 @@ char* util_toupper(char* buffer) {
     return buffer;
 }
 
+char* util_zero(char* buffer, int n) {
+    int i;
+    for(i = 0; i < n; i++) {
+        buffer[i] = 0;
+    }
+    return buffer;
+}
+
 int util_endswith(char* source, char* postfix) {
     LOG((char*) (source));
     LOG(postfix);

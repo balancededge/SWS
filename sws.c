@@ -219,11 +219,11 @@ int handle_request() {
     int resp_size;
     ssize_t rec_size;
     char buffer  [MAX_RESPONSE_SIZE];
-    char reason  [MAX_BUFFER]; *reason   = 0;
-    char method  [MAX_BUFFER]; *method   = 0;
-    char protocol[MAX_BUFFER]; *protocol = 0;
-    char uri     [MAX_BUFFER]; *uri      = 0;
-    char request [MAX_BUFFER]; *request  = 0;
+    char reason  [MAX_BUFFER]; util_zero(reason, MAX_BUFFER);
+    char method  [MAX_BUFFER]; util_zero(method, MAX_BUFFER);
+    char protocol[MAX_BUFFER]; util_zero(protocol, MAX_BUFFER);
+    char uri     [MAX_BUFFER]; util_zero(uri, MAX_BUFFER);
+    char request [MAX_BUFFER]; util_zero(reques, MAX_BUFFER);
 
     int client_port;
     char* client_IP;

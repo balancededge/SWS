@@ -5,6 +5,7 @@
 
 char* util_no_whitespace(char* buffer);
 char* util_toupper(char* buffer);
+char* util_zero(char* buffer, int n);
 int util_endswith(char* source, char* postfix);
 
 #endif
