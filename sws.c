@@ -223,7 +223,7 @@ int handle_request() {
     char method  [MAX_BUFFER]; util_zero(method, MAX_BUFFER);
     char protocol[MAX_BUFFER]; util_zero(protocol, MAX_BUFFER);
     char uri     [MAX_BUFFER]; util_zero(uri, MAX_BUFFER);
-    char request [MAX_BUFFER]; util_zero(reques, MAX_BUFFER);
+    char request [MAX_BUFFER]; util_zero(request, MAX_BUFFER);
 
     int client_port;
     char* client_IP;
