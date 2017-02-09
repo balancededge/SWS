@@ -305,12 +305,10 @@ int handle_request() {
         }
     }
     LOG("REQUEST:");
-    LOG(method);
-    LOG(uri);
-    LOG(protocol);
+    LOG(response);
 
     LOG("RESPONSE:");
-    LOGF("%d", status);
+    LOG(response);
 
     // Log request
     print_request(
