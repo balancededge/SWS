@@ -18,7 +18,7 @@
 #define TODO              printf("TODO line: %d", __LINE__)
 #define MAX_BUFFER        2048
 #define MAX_RESPONSE_SIZE 1024
-#define LOG(_x)           printf("%s\n", _x); fflush(stdout)
+#define LOG(_x)           do{ if(debug) { printf("%s\n", _x); fflush(stdout); } }while(0)
 #define VERSION           "0.0.3"
 
 //============================================================================//
@@ -55,7 +55,7 @@ int handle_request();
 //============================================================================//
 // VARIABLES
 //============================================================================//
-
+int                debug = 0;
 int                port;
 int                sock;
 struct sockaddr_in server_address;
@@ -80,7 +80,10 @@ int main(const int argc, char* argv[]) {
     }
     for(i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-            return print_help();;
+            return print_help();
+        } else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0) {
+            debug = 1;
+            break;
         } else {
             break;
         }
@@ -301,6 +304,13 @@ int handle_request() {
             return 0;
         }
     }
+    Log("REQUEST:");
+    LOG(method);
+    LOG(URI);
+    LOG(protocol);
+
+    LOG("RESPONSE:");
+    LOG(status);
 
     // Log request
     print_request(

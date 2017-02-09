@@ -29,7 +29,7 @@ int print_help() {
     print_usage();
     printf("Option:\n"
            "  -h  --help  Show usage and options\n"
-           "  -t  --test  Run tests\n");
+           "  -d  --debug Show debug messages\n");
     return EXIT_SUCCESS;
 }
 
