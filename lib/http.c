@@ -40,8 +40,7 @@ char* http_parse_block(char* buffer, const char* request, const int block) {
         }
     }
     buffer[j] = 0;
-    util_toupper(buffer);
-    return buffer;
+    return util_toupper(buffer);
 }
 /**
  * Returns the http method of a request string.

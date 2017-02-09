@@ -16,7 +16,7 @@ char* util_no_whitespace(char* buffer) {
     return buffer;
 }
 
-void util_toupper(char* buffer) {
+char* util_toupper(char* buffer) {
     int i;
     for(i = 0; i < strlen(buffer); i++) {
         buffer[i] = toupper((unsigned char) buffer[i]);
