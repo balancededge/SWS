@@ -94,7 +94,7 @@ char* http_response(
         free(response_buffer);
     }
     response_buffer = (char*) malloc(sizeof(char) * (strlen(objects) + MAX_URL));
-    sprintf(response_buffer, "HTTP/1.0 %d %s\r\n%s\r\n\r\n", status, reason, objects);
+    sprintf(response_buffer, "HTTP/1.0 %d %s\r\n\r\n%s\r\n\r\n", status, reason, objects);
     return response_buffer;
 }
 /**
