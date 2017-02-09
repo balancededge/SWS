@@ -27,7 +27,7 @@ char* util_toupper(char* buffer) {
 }
 
 int util_endswith(char* source, char* postfix) {
-    LOG(source + strlen(source) - strlen(postfix));
+    LOG((char*) (source + strlen(source) - strlen(postfix)));
     LOG(postfix);
     return strlen(source) > strlen(postfix)
         ? (strcmp((char* ) (source + strlen(source) - strlen(postfix)), postfix) == 0)
