@@ -41,7 +41,7 @@ char* http_parse_block(char* buffer, const char* request, const int block) {
         }
     }
     buffer[j] = 0;
-    return util_toupper(buffer);
+    return buffer;
 }
 /**
  * Returns the http method of a request string.
@@ -51,7 +51,7 @@ char* http_parse_block(char* buffer, const char* request, const int block) {
  * @return  char*       buffer
  */
 char* http_method(char* buffer, const char* request) {
-    return http_parse_block(buffer, request, 1);
+    return util_toupper(http_parse_block(buffer, request, 1));
 }
 /**
  * Returns the URI of a request string.
@@ -76,7 +76,7 @@ char* http_URI(char* buffer, const char* request) {
  * @return  char*       buffer
  */
 char* http_protocol(char* buffer, const char*request) {
-    return http_parse_block(buffer, request, 3);
+    return util_toupper(http_parse_block(buffer, request, 3));
 }
 /**
  * Formats an http response and places it into the provided BUFFER.
