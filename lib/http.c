@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "http.h"
+#include "util.h"
 
 #define MAX_URL 2000
 
