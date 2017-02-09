@@ -305,7 +305,7 @@ int handle_request() {
             return 0;
         }
     }
-    Log("REQUEST:");
+    LOG("REQUEST:");
     LOG(method);
     LOG(uri);
     LOG(protocol);
