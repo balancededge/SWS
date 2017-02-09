@@ -305,7 +305,7 @@ int handle_request() {
         }
     }
     LOG("REQUEST:");
-    LOG(response);
+    LOG(request);
 
     LOG("RESPONSE:");
     LOG(response);
