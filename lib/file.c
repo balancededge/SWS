@@ -9,7 +9,7 @@
 
 #define MAX_PATH 4096
 
-char* buffer = NULL;
+char* file_buffer = NULL;
 char SERVING_PATH[MAX_PATH + 1];
 /**
  * Configure the directory that files will be served from.

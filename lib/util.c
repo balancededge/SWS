@@ -16,6 +16,14 @@ char* util_no_whitespace(char* buffer) {
     return buffer;
 }
 
+void util_toupper(char* buffer) {
+    int i;
+    for(i = 0; i < strlen(buffer); i++) {
+        buffer[i] = toupper((unsigned char) buffer[i]);
+    }
+    return buffer;
+}
+
 int util_endswith(char* source, char* postfix) {
     return strlen(source) > strlen(postfix)
         ? (strcmp(source + strlen(source) - strlen(postfix), postfix) == 0)
