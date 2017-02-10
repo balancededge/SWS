@@ -207,10 +207,10 @@ int start() {
             print_select_error();
             break;
         }
-        if(FD_ISSET(STDIN_FILENO, &file_descriptors) && !handle_user()) {
+        if(FD_ISSET(sock, &file_descriptors) && !handle_request()) {
             break;
         }
-        if(FD_ISSET(sock, &file_descriptors) && !handle_request()) {
+        if(FD_ISSET(STDIN_FILENO, &file_descriptors) && !handle_user()) {
             break;
         }
     }

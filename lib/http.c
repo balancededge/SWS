@@ -136,10 +136,10 @@ char* http_response(
             strcpy(buffer, "OK");
             break;
         case 400:
-            strcpy(buffer, "BAD REQUEST");
+            strcpy(buffer, "Bad Request");
             break;
         case 404:
-            strcpy(buffer, "NOT FOUND");
+            strcpy(buffer, "Not Found");
             break;
      }
      return buffer;
