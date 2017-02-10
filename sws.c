@@ -84,11 +84,11 @@ int main(const int argc, char* argv[]) {
     }
 
     for(i = 1; i < argc; i++) {
-        if(util_option(argc[i], "-h", "--help"))
+        if(util_option(argv[i], "-h", "--help"))
             return print_help();
-        else if(util_option(argc[i], "-d", "--debug"))
+        else if(util_option(argv[i], "-d", "--debug"))
             debug = 1;
-        else if(util_option(argc[i], "-v", "--version"))
+        else if(util_option(argv[i], "-v", "--version"))
             return print_version();
         else
             break;
