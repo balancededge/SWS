@@ -15,7 +15,7 @@
 // ===========================================================================//
 
 // ===========================================================================//
-// DEFINES
+// MACROS
 // ===========================================================================//
 
 #define TODO              printf("TODO line: %d", __LINE__)
@@ -28,6 +28,7 @@
 //============================================================================//
 // INCLUDES
 //============================================================================//
+
 #include <sys/types.h>
 #include <stdio.h>
 #include <errno.h>
@@ -59,6 +60,7 @@ int handle_request();
 //============================================================================//
 // VARIABLES
 //============================================================================//
+
 int                debug = 0;
 int                port;
 int                sock;
@@ -66,9 +68,11 @@ struct sockaddr_in server_address;
 socklen_t          server_sock_length;
 struct sockaddr_in client_address;
 socklen_t          client_sock_length;
+
 //============================================================================//
 // FUNCTIONS
 //============================================================================//
+
 /**
  * Program entry point.
  */
@@ -76,13 +80,11 @@ int main(const int argc, char* argv[]) {
 
     print_title(VERSION);
 
-    int i;
-
     // Parse command line options
-    if(argc == 1) {
+    if(argc == 1)
         return print_usage();
-    }
 
+    int i;
     for(i = 1; i < argc; i++) {
         if(util_option(argv[i], "-h", "--help"))
             return print_help();

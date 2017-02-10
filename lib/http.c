@@ -1,12 +1,37 @@
+//============================================================================//
+// @file http.c
+// @author Eric Buss
+// @date February 2017
+//
+// Provides a set of functions parsing and sending HTTP requests/responses.
+//
+// ===========================================================================//
+
+//============================================================================//
+// INCLUDES
+//============================================================================//
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "http.h"
 #include "util.h"
 
+//============================================================================//
+// MACROS
+//============================================================================//
+
 #define MAX_URL 2000
 
+//============================================================================//
+// VARIABLES
+//============================================================================//
+
 char* response_buffer = NULL;
+
+//============================================================================//
+// FUNCTIONS
+//============================================================================//
 
 /**
  * Divides a request string into blocks based off whitespace. The requested
@@ -79,7 +104,8 @@ char* http_protocol(char* buffer, const char*request) {
     return util_toupper(http_parse_block(buffer, request, 3));
 }
 /**
- * Formats an http response and places it into the provided BUFFER.
+ * Formats an http response and places into an allocated string. Everytime the
+ * function is called the previous string is freed and a new one is allocated.
  *
  * @param   const int   status  http response status (200, 400, 404)
  * @param   const char* reason  Status reason message
@@ -98,7 +124,11 @@ char* http_response(
     return response_buffer;
 }
 /**
+ * Returns the HTTP reason for the given status code.
  *
+ * @param   char*       buffer  write buffer
+ * @param   const int   status  status code
+ * @return  char*       buffer
  */
  char* http_reason(char* buffer, const int status) {
      switch(status) {

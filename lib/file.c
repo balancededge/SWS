@@ -1,3 +1,16 @@
+//============================================================================//
+// @file file.c
+// @author Eric Buss
+// @date February 2017
+//
+// Provides a set of functions for working with files.
+//
+// ===========================================================================//
+
+//============================================================================//
+// INCLUDES
+//============================================================================//
+
 #include <sys/types.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -7,14 +20,32 @@
 #include <string.h>
 #include "file.h"
 
-#define MAX_PATH 4096
+// ===========================================================================//
+// MACROS
+// ===========================================================================//
+
+// *soft* PATH limit
+// http://insanecoding.blogspot.ca/2007/11/pathmax-simply-isnt.html
+#ifndef MAX_PATH
+    #define MAX_PATH 4096
+#endif
+
+//============================================================================//
+// VARIABLES
+//============================================================================//
 
 char* file_buffer = NULL;
 char SERVING_PATH[MAX_PATH + 1];
+
+//============================================================================//
+// FUNCTIONS
+//============================================================================//
+
 /**
  * Configure the directory that files will be served from.
  *
  * @param   char*  path to directory
+ * @return  int    1 if path was a directory
  */
 int set_serving_path(const char* path) {
     if(is_directory(path)) {
@@ -68,11 +99,12 @@ int in_directory(const char* path) {
     char full[MAX_PATH + 1];
     full_path(full, path);
     return
-        !strncmp(SERVING_PATH, full, strlen(SERVING_PATH)) &&
+        strncmp(SERVING_PATH, full, strlen(SERVING_PATH)) == 0 &&
         is_file(full);
 }
 /**
- * Reads the contents of a file into a buffer.
+ * Reads the contents of a file into an allocated buffer. The buffer is freed
+ * and recreated every time the function is called.
  *
  * @param   const int   n       buffer size
  * @param   const char* path    file path
@@ -84,6 +116,7 @@ char* read_file(const char* path) {
     char full[MAX_PATH + 1];
     full_path(full, path);
 
+    // Free the old buffer if it exsists
     if(file_buffer != NULL) {
         free(file_buffer);
     }
