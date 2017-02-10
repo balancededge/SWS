@@ -6,6 +6,7 @@
 int print_title(char* version);
 int print_usage();
 int print_help();
+int print_version();
 int print_running(const int port, const char* path);
 int print_recieve_error();
 int print_client_property_error();

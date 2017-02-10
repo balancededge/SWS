@@ -37,3 +37,7 @@ int util_endswith(char* source, char* postfix) {
         ? (strcmp((char* ) (source + strlen(source) - strlen(postfix)), postfix) == 0)
         : 0;
 }
+
+int util_option(char* arg, char* flag, char* verbose) {
+    return strcmp(arg, flag) == 0 || strcmp(arg, verbose) == 0;
+}

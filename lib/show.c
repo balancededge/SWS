@@ -28,8 +28,13 @@ int print_usage() {
 int print_help() {
     print_usage();
     printf("Option:\n"
-           "  -h  --help  Show usage and options\n"
-           "  -d  --debug Show debug messages\n");
+           "  -h  --help    Show usage and options\n"
+           "  -d  --debug   Show debug messages\n"
+           "  -v  --version Show version number\n");
+    return EXIT_SUCCESS;
+}
+
+int print_version() {
     return EXIT_SUCCESS;
 }
 

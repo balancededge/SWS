@@ -2,12 +2,15 @@
 // @file sws.c
 // @author Eric Buss
 // @date February 2017
-// @version 0.0.1
+// @version 0.0.3
 //
 // SWS is a ...
 //
-// Coding Resources
+// Code Resources
 // - http://stackoverflow.com/questions/4553012/checking-if-a-file-is-a-directory-or-just-a-file
+// - http://beej.us/guide/bgnet/
+// - http://stackoverflow.com/questions/174531/easiest-way-to-get-files-contents-in-c
+// - https://connex.csc.uvic.ca/.../udp_server.c
 //
 // ===========================================================================//
 
@@ -64,7 +67,7 @@ socklen_t          server_sock_length;
 struct sockaddr_in client_address;
 socklen_t          client_sock_length;
 //============================================================================//
-// PROGRAM MAIN
+// FUNCTIONS
 //============================================================================//
 /**
  * Program entry point.
@@ -79,14 +82,16 @@ int main(const int argc, char* argv[]) {
     if(argc == 1) {
         return print_usage();
     }
+
     for(i = 1; i < argc; i++) {
-        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+        if(util_option(arg, "-h", "--help"))
             return print_help();
-        } else if(strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--debug") == 0) {
+        else if(util_option(arg, "-d", "--debug"))
             debug = 1;
-        } else {
+        else if(util_option(arg, "-v", "--version"))
+            return print_version();
+        else
             break;
-        }
     }
     char* parsed_port = argv[i];
     char* parsed_path = argv[i + 1];
@@ -109,10 +114,15 @@ int main(const int argc, char* argv[]) {
     return EXIT_SUCCESS;
 }
 /**
+ * Validates and sets the port number.
  *
+ * @param   const char* arg A string containing the port number
+ * @Returns int             1 if the port was succesfully set
  */
 int set_port(const char* arg) {
+
     port = (int) strtol(arg, (char**) NULL, 10);
+
     if(strcmp(arg, "0") == 0 || port != 0) {
         if(port >= 0 && port <= 65535) {
             return 1;
@@ -124,7 +134,10 @@ int set_port(const char* arg) {
     return 0;
 }
 /**
+ * Opens a socket and sets the reuse flag. Will print an error and return 0 if
+ * a socket is not available.
  *
+ * @return  int     1 if socket is opened
  */
 int set_socket() {
     // Create socket
@@ -148,7 +161,10 @@ int set_socket() {
     return  1;
 }
 /**
+ * Reserves the server's address and port. Returns 0 if the address could not
+ * bind to the previously created port.
  *
+ * @return  int     1 if the address was succesfully bound
  */
 int set_server_address() {
     // Clear space
@@ -170,7 +186,7 @@ int set_server_address() {
     return 1;
 }
 /**
- *
+ * Starts and runs the web server loop.
  */
 int start() {
 
@@ -198,7 +214,9 @@ int start() {
     }
 }
 /**
+ * Handles user input. Returns 0 if user enters the q key.
  *
+ * @return  int     1 if the user entered something other than q
  */
 int handle_user() {
     char buffer[MAX_BUFFER];
@@ -211,28 +229,32 @@ int handle_user() {
     return 1;
 }
 /**
+ * Handles HTTP request. Returns 0 if any part of the response sequence fails.
  *
+ * @return  int     1 if the resposne is succesful
  */
 int handle_request() {
 
-    // To be replaced with recieve from
     int sent;
     int status;
     int send_size;
     int resp_size;
     ssize_t rec_size;
-    char buffer  [MAX_RESPONSE_SIZE];
-    char reason  [MAX_BUFFER]; util_zero(reason, MAX_BUFFER);
-    char method  [MAX_BUFFER]; util_zero(method, MAX_BUFFER);
-    char protocol[MAX_BUFFER]; util_zero(protocol, MAX_BUFFER);
-    char uri     [MAX_BUFFER]; util_zero(uri, MAX_BUFFER);
-    char request [MAX_BUFFER]; util_zero(request, MAX_BUFFER);
+
+    // Create and zero buffers
+    char buffer  [MAX_RESPONSE_SIZE]; util_zero(buffer,   MAX_RESPONSE_SIZE);
+    char reason  [MAX_BUFFER];        util_zero(reason,   MAX_BUFFER);
+    char method  [MAX_BUFFER];        util_zero(method,   MAX_BUFFER);
+    char protocol[MAX_BUFFER];        util_zero(protocol, MAX_BUFFER);
+    char uri     [MAX_BUFFER];        util_zero(uri,      MAX_BUFFER);
+    char request [MAX_BUFFER];        util_zero(request,  MAX_BUFFER);
 
     int client_port;
     char* client_IP;
+
+    // Allocatted strings
     char* response;
     char* objects;
-
     char* empty = "";
 
     // Recieve request
@@ -252,8 +274,7 @@ int handle_request() {
         return 1;
     }
 
-
-    // Get Client IP
+    // Get Client IP and port
     client_IP   = inet_ntoa(client_address.sin_addr);
     client_port = ntohs(client_address.sin_port);
     if (client_IP == NULL || client_port < 0) {
@@ -289,6 +310,7 @@ int handle_request() {
     // Send response
     for(sent = 0; sent < resp_size; sent += MAX_RESPONSE_SIZE) {
 
+        // Send packet
         send_size = sendto(
             sock,
             (char*) (response + sent),
@@ -299,6 +321,8 @@ int handle_request() {
             (struct sockaddr *) &client_address,
             client_sock_length
         );
+
+        // Check that we succeeded
         if(send_size < 0) {
             print_send_error();
             return 0;
@@ -306,7 +330,6 @@ int handle_request() {
     }
     LOG("REQUEST:");
     LOG(request);
-
     LOG("RESPONSE:");
     LOG(response);
 
