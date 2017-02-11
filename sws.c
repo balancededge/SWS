@@ -268,9 +268,11 @@ int handle_request() {
         (struct sockaddr*) &client_address,
         &client_sock_length
     );
-    if(rec_size < 0) {
+    if(rec_size < 0 || rec_size > MAX_BUFFER) {
         print_recieve_error();
         return 0;
+    } else {
+        request[rec_size] = 0;
     }
     if(strlen(request) <= 0) {
         return 1;
